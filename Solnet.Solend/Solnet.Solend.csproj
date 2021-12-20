@@ -2,18 +2,18 @@
 
     <PropertyGroup>
         <Description>
-            Solnet.Template implements functionality to integrate Template project into .Net applications.
+            Solnet.Solend implements functionality to integrate Solend Protocol project into .Net applications.
         </Description>
         <TargetFramework>net5.0</TargetFramework>
 
         <IsPackable>false</IsPackable>
 
-        <RootNamespace>Solnet.Template</RootNamespace>
+        <RootNamespace>Solnet.Solend</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-            <_Parameter1>Solnet.Template.Test</_Parameter1>
+            <_Parameter1>Solnet.Solend.Test</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
 
@@ -21,9 +21,18 @@
         <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0.0" />
-        <PackageReference Include="Solnet.Programs" Version="0.3.2" />
-        <PackageReference Include="Solnet.Rpc" Version="0.3.2" />
-        <PackageReference Include="Solnet.Wallet" Version="0.3.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Solnet.Programs">
+        <HintPath>..\..\Solnet\src\Solnet.Programs\obj\Debug\net5.0\Solnet.Programs.dll</HintPath>
+      </Reference>
+      <Reference Include="Solnet.Rpc">
+        <HintPath>..\..\Solnet\src\Solnet.Rpc\obj\Debug\net5.0\Solnet.Rpc.dll</HintPath>
+      </Reference>
+      <Reference Include="Solnet.Wallet">
+        <HintPath>..\..\Solnet\src\Solnet.Wallet\obj\Debug\net5.0\Solnet.Wallet.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
     <Import Project="..\SharedBuildProperties.props" />
