@@ -1,5 +1,6 @@
 ﻿using Solnet.Programs;
 using Solnet.Programs.TokenLending;
+using Solnet.Rpc;
 using Solnet.Rpc.Models;
 using Solnet.Wallet;
 using System.Collections.Generic;
@@ -16,17 +17,42 @@ namespace Solnet.Solend
     /// </summary>
     public class SolendProgram : TokenLendingProgram
     {
+        /// <summary>
+        /// Solend Program MainNet Program ID.
+        /// </summary>
+        public static readonly PublicKey MainNetProgramIdKey =
+            new PublicKey("So1endDq2YkqhipRh3WViPa8hdiSpxWy6z3Z6tMCpAo");
 
         /// <summary>
-        /// Solend Program Mainnet Program ID
+        /// Solend Program DevNet Program ID.
         /// </summary>
-        public static new readonly PublicKey ProgramIdKey =
-            new PublicKey("So1endDq2YkqhipRh3WViPa8hdiSpxWy6z3Z6tMCpAo");
+        public static readonly PublicKey DevNetProgramIdKey =
+            new PublicKey("ALend7Ketfx5bxh6ghsCDXAoDrhvEmsXT3cynB6aPLgx");
 
         /// <summary>
         /// Solend Program Name.
         /// </summary>
-        public static new readonly string ProgramName = "Solend Program";
+        public const string DefaultProgramName = "Solend Program";
+
+        /// <summary>
+        /// Initialize the <see cref="SolendProgram"/> with the given program id key and program name.
+        /// </summary>
+        /// <param name="programIdKey">The program id key.</param>
+        /// <param name="programName">The program name.</param>
+        public SolendProgram(PublicKey programIdKey, string programName = DefaultProgramName)
+            : base(programIdKey, programName) { }
+
+        /// <summary>
+        /// Initialize the <see cref="SolendProgram"/> for <see cref="Cluster.DevNet"/>.
+        /// </summary>
+        /// <returns>The <see cref="SolendProgram"/> instance.</returns>
+        public static SolendProgram CreateDevNet() => new SolendProgram(DevNetProgramIdKey);
+
+        /// <summary>
+        /// Initialize the <see cref="TokenLendingProgram"/> for <see cref="Cluster.MainNet"/>.
+        /// </summary>
+        /// <returns>The <see cref="TokenLendingProgram"/> instance.</returns>
+        public static SolendProgram CreateMainNet() => new SolendProgram(MainNetProgramIdKey);
 
         /// <summary>
         /// 
@@ -67,7 +93,7 @@ namespace Solnet.Solend
                 AccountMeta.ReadOnly(reserveLiquidityPyth, false),
                 AccountMeta.ReadOnly(reserveLiquiditySwitchboard, false),
                 AccountMeta.ReadOnly(userTransferAuthority, true),
-                AccountMeta.ReadOnly(SystemProgram.SysVarClockKey, false),
+                AccountMeta.ReadOnly(SysVars.ClockKey, false),
                 AccountMeta.ReadOnly(TokenProgram.ProgramIdKey, false)
             };
             return new TransactionInstruction
@@ -112,7 +138,7 @@ namespace Solnet.Solend
                 AccountMeta.Writable(reserveLiquiditySupply, false),
                 AccountMeta.Writable(obligationOwner, true),
                 AccountMeta.ReadOnly(userTransferAuthority, true),
-                AccountMeta.ReadOnly(SystemProgram.SysVarClockKey, false),
+                AccountMeta.ReadOnly(SysVars.ClockKey, false),
                 AccountMeta.ReadOnly(TokenProgram.ProgramIdKey, false)
             };
             return new TransactionInstruction

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using Solnet.Rpc;
+using Solnet.Wallet;
+
 namespace Solnet.Solend
 {
     /// <summary>
@@ -9,19 +11,19 @@ namespace Solnet.Solend
     public static class ClientFactory
     {
         /// <summary>
-        /// Instantiate the Solend client.
+        /// Instantiate the <see cref="SolendClient"/>.
         /// </summary>
         /// <param name="logger">The logger.</param>
         /// <param name="rpcClient">The RPC Client instance.</param>
-        /// <param name="streamingRpcClient">The Streaming RPC Client instance.</param>
-        /// <returns>The Solend Client.</returns>
-        public static ISolendClient GetClient(IRpcClient rpcClient = null, IStreamingRpcClient streamingRpcClient = null,
+        /// <param name="programId"
+        /// <returns>The <see cref="SolendClient"/>.</returns>
+        public static ISolendClient GetClient(IRpcClient rpcClient = null, PublicKey programId = null,
             ILogger logger = null)
         {
 #if DEBUG
             logger ??= GetDebugLogger();
 #endif
-            return new SolendClient(rpcClient, logger);
+            return new SolendClient(logger, rpcClient, programId);
         }
 
 #if DEBUG

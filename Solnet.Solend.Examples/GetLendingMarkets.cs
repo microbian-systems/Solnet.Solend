@@ -1,4 +1,6 @@
-﻿using Solnet.Rpc;
+﻿using Solnet.Programs.Utilities;
+using Solnet.Rpc;
+using Solnet.Wallet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,20 +11,23 @@ namespace Solnet.Solend.Examples
 {
     public class GetLendingMarkets : IRunnableExample
     {
-        private static readonly IRpcClient RpcClient = Solnet.Rpc.ClientFactory.GetClient(Cluster.MainNet);
-        private static readonly IStreamingRpcClient StreamingRpcClient =
-            Solnet.Rpc.ClientFactory.GetStreamingClient(Cluster.MainNet);
+        private static IRpcClient RpcClient;
+        private static IStreamingRpcClient StreamingRpcClient;
+
+        private static PublicKey Owner = new("hoakwpFB8UoLnPpLC56gsjpY7XbVwaCuRQRMQzN5TVh");
 
         private readonly ISolendClient SolendClient;
 
         public GetLendingMarkets()
         {
-            SolendClient = ClientFactory.GetClient(RpcClient, StreamingRpcClient);
+            RpcClient = Rpc.ClientFactory.GetClient(Cluster.DevNet);
+            StreamingRpcClient = Rpc.ClientFactory.GetStreamingClient(Cluster.DevNet);
+            SolendClient = ClientFactory.GetClient(RpcClient, SolendProgram.DevNetProgramIdKey);
         }
 
-        public void Run()
+        public async void Run()
         {
-            var markets = SolendClient.GetLendingMarkets();
+            var markets = await SolendClient.GetLendingMarketsAsync();
 
             Console.WriteLine($"{markets.ParsedResult.Count} Lending Markets found.");
         }

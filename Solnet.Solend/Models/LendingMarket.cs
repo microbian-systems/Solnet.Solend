@@ -1,14 +1,13 @@
 ﻿using Solnet.Programs.Utilities;
 using Solnet.Wallet;
 using System;
-using TokenLendingProgramLendingMarket = Solnet.Programs.TokenLending.Models.LendingMarket;
 
 namespace Solnet.Solend.Models
 {
     /// <summary>
-    /// The state of a lending market.
+    /// Represents a lending market in Solend.
     /// </summary>
-    public class LendingMarket : TokenLendingProgramLendingMarket
+    public class LendingMarket : Programs.TokenLending.Models.LendingMarket
     {
         /// <summary>
         /// The layout of the structure.
@@ -31,24 +30,22 @@ namespace Solnet.Solend.Models
         public PublicKey SwitchboardOracleProgramId;
 
         /// <summary>
-        /// Initialize a new Lending Market from Solend.
+        /// Initialize a new <see cref="LendingMarket"/> from Solend with the given data..
         /// </summary>
-        /// <param name="data"></param>
-        public LendingMarket(ReadOnlySpan<byte> data)
-            : base(data.Slice(0, TokenLendingProgramLendingMarket.Layout.Length))
+        /// <param name="data">The data to deserialize into the structure.</param>
+        public LendingMarket(ReadOnlySpan<byte> data) : base(data[..Layout.Length])
         {
             if (data.Length != ExtraLayout.Length)
-                throw new ArgumentException("data length is invalid");
+                throw new ArgumentException($"{nameof(data)} has wrong size. Expected {ExtraLayout.Length} bytes, actual {data.Length} bytes.");
 
             SwitchboardOracleProgramId = data.GetPubKey(ExtraLayout.SwitchboardOracleProgramIdOffset);
         }
 
         /// <summary>
-        /// 
+        /// Deserialize the given byte array into the <see cref="LendingMarket"/> structure.
         /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public static LendingMarket Deserialize(byte[] data)
-            => new LendingMarket(data.AsSpan());
+        /// <param name="data">The byte array.</param>
+        /// <returns>The <see cref="LendingMarket"/> instance.</returns>
+        public static new LendingMarket Deserialize(byte[] data) => new (data.AsSpan());
     }
 }
