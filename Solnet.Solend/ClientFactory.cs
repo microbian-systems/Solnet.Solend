@@ -21,7 +21,7 @@ namespace Solnet.Solend
             ILogger logger = null)
         {
 #if DEBUG
-            logger ??= GetDebugLogger();
+            //logger ??= GetDebugLogger();
 #endif
             return new SolendClient(logger, rpcClient, programId);
         }

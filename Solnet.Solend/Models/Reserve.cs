@@ -20,10 +20,64 @@ namespace Solnet.Solend.Models
         }
 
         /// <summary>
+        /// The reserve config.
+        /// </summary>
+        public new ReserveConfig Config;
+
+        /// <summary>
         /// Initialize the <see cref="Reserve"/> with the given data.
         /// </summary>
         /// <param name="data">The byte array.</param>
-        public Reserve(ReadOnlySpan<byte> data) : base(data[..Layout.Length]) { }
+        public Reserve(ReadOnlySpan<byte> data) : base(data[..Layout.Length])
+        {
+            if (data.Length != ExtraLayout.Length)
+                throw new ArgumentException($"{nameof(data)} has wrong size. Expected {ExtraLayout.Length} bytes, actual {data.Length} bytes.");
+
+            Config = new (data.Slice(Layout.ConfigOffset, ReserveConfig.ExtraLayout.Length));
+        }
+
+        /// <summary>
+        /// Gets the total token supply.
+        /// </summary>
+        /// <returns>The total token supply.</returns>
+        public decimal GetTotalSupply() 
+            => Collateral.TotalSupply / (decimal) Math.Pow(10, Liquidity.Decimals);
+
+        /// <summary>
+        /// Gets the available token supply.
+        /// </summary>
+        /// <returns>The available token supply.</returns>
+        public decimal GetAvailableAmount()
+            => Liquidity.AvailableAmount / (decimal) Math.Pow(10, Liquidity.Decimals);
+
+        /// <summary>
+        /// Gets the total token supply.
+        /// </summary>
+        /// <returns>The total token supply.</returns>
+        public decimal GetTotalSupplyUsd()
+            => GetTotalSupply() * GetMarketPrice();
+
+        /// <summary>
+        /// Gets the total borrow amount in the corresponding token.
+        /// </summary>
+        /// <returns>The total borrow amount in the corresponding token.</returns>
+        public decimal GetTotalBorrow()
+            => (decimal) (Liquidity.BorrowedAmountWads / Constants.Wad) 
+                / (decimal) Math.Pow(10, Liquidity.Decimals);
+
+        /// <summary>
+        /// Gets the market price of the underlying liquidity token.
+        /// </summary>
+        /// <returns>The market price in USD.</returns>
+        public decimal GetMarketPrice()
+            => (decimal) Liquidity.MarketPrice / (decimal) Constants.Wad;
+
+        /// <summary>
+        /// Gets total borrow amount in USD.
+        /// </summary>
+        /// <returns>The total borrow amount in USD.</returns>
+        public decimal GetTotalBorrowUsd()
+            => GetTotalBorrow() * GetMarketPrice();
 
         /// <summary>
         /// Calculates the supply APR for this reserve.
@@ -99,7 +153,7 @@ namespace Solnet.Solend.Models
         /// <returns>The APY value.</returns>
         private decimal CalculateApy(double apr)
         {
-            return (decimal)Math.Pow(1d + (apr / Constants.SlotsPerYear), Constants.SlotsPerYear - 1);
+            return (decimal) Math.Pow(1d + (apr / Constants.SlotsPerYear), Constants.SlotsPerYear) - 1m;
         }
 
         /// <summary>

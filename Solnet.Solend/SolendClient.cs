@@ -26,7 +26,8 @@ namespace Solnet.Solend
         /// Initialize the Solend client with the given RPC client instance and logger.
         /// </summary>
         /// <param name="rpcClient">The RPC client instance.</param>
-        /// <param name="logger">The logger instance</param>
+        /// <param name="logger">The logger instance.</param>
+        /// <param name="programId">The program id.</param>
         internal SolendClient(ILogger logger = null, IRpcClient rpcClient = default,
             PublicKey programId = null) : base(rpcClient, logger: logger)
         {
@@ -63,12 +64,12 @@ namespace Solnet.Solend
             {
                 new MemCmp()
                 {
-                    Offset = Models.Reserve.Layout.LendingMarketOffset,
+                    Offset = Programs.TokenLending.Models.Reserve.Layout.LendingMarketOffset,
                     Bytes = lendingMarket.Key
                 }
             };
             return await GetProgramAccounts<Models.Reserve>(_programId, filters,
-                Models.Reserve.Layout.Length, commitment);
+                Models.Reserve.ExtraLayout.Length, commitment);
         }
     }
 }

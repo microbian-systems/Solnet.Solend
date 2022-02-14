@@ -24,4 +24,8 @@
         <ProjectReference Include="..\Solnet.Solend\Solnet.Solend.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="NewFolder\" />
+    </ItemGroup>
+
 </Project>
