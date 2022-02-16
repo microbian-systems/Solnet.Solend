@@ -10,16 +10,4 @@
         <ProjectReference Include="..\Solnet.Solend\Solnet.Solend.csproj" />
     </ItemGroup>
 
-	<ItemGroup>
-		<Reference Include="Solnet.Programs">
-			<HintPath>..\..\Solnet\src\Solnet.Programs\obj\Debug\net5.0\Solnet.Programs.dll</HintPath>
-		</Reference>
-		<Reference Include="Solnet.Rpc">
-			<HintPath>..\..\Solnet\src\Solnet.Rpc\obj\Debug\net5.0\Solnet.Rpc.dll</HintPath>
-		</Reference>
-		<Reference Include="Solnet.Wallet">
-			<HintPath>..\..\Solnet\src\Solnet.Wallet\obj\Debug\net5.0\Solnet.Wallet.dll</HintPath>
-		</Reference>
-	</ItemGroup>
-
 </Project>

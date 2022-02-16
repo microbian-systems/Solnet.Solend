@@ -1,3 +1,4 @@
+using Solnet.Programs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace Solnet.Solend.Examples
     {
         public static void Main(string[] args)
         {
+            InstructionDecoder.Register(SolendProgram.DevNetProgramIdKey, SolendProgram.Decode);
             var examples = Assembly.GetEntryAssembly().GetExportedTypes().Where(t => t.IsAssignableTo(typeof(IRunnableExample))).ToList();
 
             while(true)

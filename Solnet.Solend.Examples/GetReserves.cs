@@ -10,19 +10,15 @@ namespace Solnet.Solend.Examples
     {
         private IRpcClient RpcClient;
         private ISolendClient SolendClient;
-        private Wallet.Wallet Wallet;
 
         public GetReserves()
         {
-            RpcClient = Rpc.ClientFactory.GetClient("https://citadel.genesysgo.net");
-            SolendClient = ClientFactory.GetClient(RpcClient, SolendProgram.MainNetProgramIdKey);
+            RpcClient = Rpc.ClientFactory.GetClient(Cluster.DevNet);
+            SolendClient = ClientFactory.GetClient(RpcClient, SolendProgram.DevNetProgramIdKey);
         }
 
         public async void Run()
         {
-            // SOL reserve on devnet
-            // var reserve = await SolendClient.GetReserveAsync(new ("5VVLD7BQp8y3bTgyF5ezm1ResyMTR3PhYsT4iHFU8Sxz"));
-
             var markets = await SolendClient.GetLendingMarketsAsync();
             if (!markets.WasSuccessful)
             {
@@ -63,16 +59,16 @@ namespace Solnet.Solend.Examples
                     if (supply < 1) continue;
 
                     Console.WriteLine($"\n\tReserve: {reserves.OriginalRequest.Result[j].PublicKey}\n" +
-                        //$"\t\tCollat. Mint: {reserve.Collateral.Mint}\n" +
-                        //$"\t\tCollat. Supply: {reserve.Collateral.Supply}\n" +
+                        $"\t\tCollat. Mint: {reserve.Collateral.Mint}\n" +
+                        $"\t\tCollat. Supply: {reserve.Collateral.Supply}\n" +
                         $"\t\tCollat. Total Supply: {supply:N4}\n" +
                         $"\t\tCollat. Total Supply: ${supplyUsd:N4}\n" +
                         $"\t\tLiq. Mint: {reserve.Liquidity.Mint}\n" +
-                        //$"\t\tLiq. Supply: {reserve.Liquidity.Supply}\n" +
-                        //$"\t\tLiq. Fee Receiver: {reserve.Liquidity.FeeReceiver}\n" +
-                        //$"\t\tLiq. Oracle: {reserve.Liquidity.Oracle}\n" +
+                        $"\t\tLiq. Supply: {reserve.Liquidity.Supply}\n" +
+                        $"\t\tLiq. Pyth Oracle: {reserve.Liquidity.PythOracle}\n" +
+                        $"\t\tLiq. Switchboard Oracle: {reserve.Liquidity.SwitchboardOracle}\n" +
                         $"\t\tLiq. Market Price: ${reserve.GetMarketPrice():N4}\n" +
-                        //$"\t\tLiq. Mint Decimals: {reserve.Liquidity.Decimals}\n" +
+                        $"\t\tLiq. Mint Decimals: {reserve.Liquidity.Decimals}\n" +
                         $"\t\tLiq. Borrowed Amount: {reserve.GetTotalBorrow():N4}\n" +
                         $"\t\tLiq. Borrowed Amount: ${borrowUsd:N4}\n" +
                         $"\t\tLiq. Available Amount: {reserve.GetAvailableAmount():N4}");

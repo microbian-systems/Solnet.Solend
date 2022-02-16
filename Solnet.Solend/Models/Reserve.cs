@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Solnet.Programs.Utilities;
+using Solnet.Wallet;
+using System;
 using System.Numerics;
 
 namespace Solnet.Solend.Models
@@ -6,49 +8,115 @@ namespace Solnet.Solend.Models
     /// <summary>
     /// Represents a reserve in Solend.
     /// </summary>
-    public class Reserve : Programs.TokenLending.Models.Reserve
+    public class Reserve
     {
         /// <summary>
         /// The layout of the <see cref="Reserve"/> structure.
         /// </summary>
-        public static class ExtraLayout
+        public static class Layout
         {
             /// <summary>
             /// The length of the <see cref="Reserve"/> structure.
             /// </summary>
             public const int Length = 619;
+
+            /// <summary>
+            /// The offset at which the version value begins.
+            /// </summary>
+            public const int VersionOffset = 0;
+
+            /// <summary>
+            /// The offset at which the last update value begins.
+            /// </summary>
+            public const int LastUpdateOffset = 1;
+
+            /// <summary>
+            /// The offset at which the lending market value begins.
+            /// </summary>
+            public const int LendingMarketOffset = 10;
+
+            /// <summary>
+            /// The offset at which the liquidity value begins.
+            /// </summary>
+            public const int LiquidityOffset = 42;
+
+            /// <summary>
+            /// The offset at which the collateral value begins.
+            /// </summary>
+            public const int CollateralOffset = 227;
+
+            /// <summary>
+            /// The offset at which the config value begins.
+            /// </summary>
+            public const int ConfigOffset = 299;
         }
 
         /// <summary>
-        /// The reserve config.
+        /// Version of the struct
         /// </summary>
-        public new ReserveConfig Config;
+        public byte Version;
+
+        /// <summary>
+        /// Last slot when supply and rates updated
+        /// </summary>
+        public LastUpdate LastUpdate;
+
+        /// <summary>
+        /// Lending market public key
+        /// </summary>
+        public PublicKey LendingMarket;
+
+        /// <summary>
+        /// Reserve liquidity
+        /// </summary>
+        public ReserveLiquidity Liquidity;
+
+        /// <summary>
+        /// Reserve collateral
+        /// </summary>
+        public ReserveCollateral Collateral;
+
+        /// <summary>
+        /// Reserve configuration values
+        /// </summary>
+        public ReserveConfig Config;
 
         /// <summary>
         /// Initialize the <see cref="Reserve"/> with the given data.
         /// </summary>
         /// <param name="data">The byte array.</param>
-        public Reserve(ReadOnlySpan<byte> data) : base(data[..Layout.Length])
+        public Reserve(ReadOnlySpan<byte> data)
         {
-            if (data.Length != ExtraLayout.Length)
-                throw new ArgumentException($"{nameof(data)} has wrong size. Expected {ExtraLayout.Length} bytes, actual {data.Length} bytes.");
-
-            Config = new (data.Slice(Layout.ConfigOffset, ReserveConfig.ExtraLayout.Length));
+            if (data.Length != Layout.Length)
+                throw new ArgumentException($"{nameof(data)} has wrong size. Expected {Layout.Length} bytes, actual {data.Length} bytes.");
+            Version = data.GetU8(Layout.VersionOffset);
+            LastUpdate = new(data.Slice(Layout.LastUpdateOffset, LastUpdate.Layout.Length));
+            LendingMarket = data.GetPubKey(Layout.LendingMarketOffset);
+            Liquidity = new(data.Slice(Layout.LiquidityOffset, ReserveLiquidity.Layout.Length));
+            Collateral = new(data.Slice(Layout.CollateralOffset, ReserveCollateral.Layout.Length));
+            Config = new(data.Slice(Layout.ConfigOffset, ReserveConfig.Layout.Length));
         }
+
+        /// <summary>
+        /// Deserialize the given byte array into the <see cref="Reserve"/> structure.
+        /// </summary>
+        /// <param name="data">The byte array.</param>
+        /// <returns>The <see cref="Reserve"/> instance.</returns>
+        public static Reserve Deserialize(byte[] data) => new(data.AsSpan());
 
         /// <summary>
         /// Gets the total token supply.
         /// </summary>
         /// <returns>The total token supply.</returns>
-        public decimal GetTotalSupply() 
-            => Collateral.TotalSupply / (decimal) Math.Pow(10, Liquidity.Decimals);
+        public decimal GetTotalSupply()
+                => Collateral.TotalSupply / (decimal)Math.Pow(10, Liquidity.Decimals);
 
         /// <summary>
         /// Gets the available token supply.
         /// </summary>
         /// <returns>The available token supply.</returns>
         public decimal GetAvailableAmount()
-            => Liquidity.AvailableAmount / (decimal) Math.Pow(10, Liquidity.Decimals);
+            => Liquidity.AvailableAmount / (decimal)Math.Pow(10, Liquidity.Decimals);
 
         /// <summary>
         /// Gets the total token supply.
@@ -62,15 +130,15 @@ namespace Solnet.Solend.Models
         /// </summary>
         /// <returns>The total borrow amount in the corresponding token.</returns>
         public decimal GetTotalBorrow()
-            => (decimal) (Liquidity.BorrowedAmountWads / Constants.Wad) 
-                / (decimal) Math.Pow(10, Liquidity.Decimals);
+            => (decimal)(Liquidity.BorrowedAmountWads / Constants.Wad)
+                / (decimal)Math.Pow(10, Liquidity.Decimals);
 
         /// <summary>
         /// Gets the market price of the underlying liquidity token.
         /// </summary>
         /// <returns>The market price in USD.</returns>
         public decimal GetMarketPrice()
-            => (decimal) Liquidity.MarketPrice / (decimal) Constants.Wad;
+            => (decimal)Liquidity.MarketPrice / (decimal)Constants.Wad;
 
         /// <summary>
         /// Gets total borrow amount in USD.
@@ -153,7 +221,7 @@ namespace Solnet.Solend.Models
         /// <returns>The APY value.</returns>
         private decimal CalculateApy(double apr)
         {
-            return (decimal) Math.Pow(1d + (apr / Constants.SlotsPerYear), Constants.SlotsPerYear) - 1m;
+            return (decimal)Math.Pow(1d + (apr / Constants.SlotsPerYear), Constants.SlotsPerYear) - 1m;
         }
 
         /// <summary>
@@ -168,12 +236,5 @@ namespace Solnet.Solend.Models
 
             return totalBorrowsWadsAsDecimal / (Liquidity.AvailableAmount + totalBorrowsWadsAsDecimal);
         }
-
-        /// <summary>
-        /// Deserialize the given byte array into the <see cref="Reserve"/> structure.
-        /// </summary>
-        /// <param name="data">The byte array.</param>
-        /// <returns>The <see cref="Reserve"/> instance.</returns>
-        public static new Reserve Deserialize(byte[] data) => new(data.AsSpan());
     }
 }

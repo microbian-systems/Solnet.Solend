@@ -3,6 +3,7 @@ using Solnet.Wallet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,18 +12,83 @@ namespace Solnet.Solend.Models
     /// <summary>
     /// Represents a reserve's config in Solend.
     /// </summary>
-    public class ReserveLiquidity : Programs.TokenLending.Models.ReserveLiquidity
+    public class ReserveLiquidity
     {
         /// <summary>
         /// The layout of the <see cref="ReserveLiquidity"/> structure.
         /// </summary>
-        public static class ExtraLayout
+        public static class Layout
         {
             /// <summary>
             /// The length of the <see cref="ReserveLiquidity"/> structure.
             /// </summary>
             public const int Length = 185;
+
+            /// <summary>
+            /// The offset at which the mint value begins.
+            /// </summary>
+            public const int MintOffset = 0;
+
+            /// <summary>
+            /// The offset at which the decimals value begins.
+            /// </summary>
+            public const int DecimalsOffset = 32;
+
+            /// <summary>
+            /// The offset at which the supply value begins.
+            /// </summary>
+            public const int SupplyOffset = 33;
+
+            /// <summary>
+            /// The offset at which the pyth oracle value begins.
+            /// </summary>
+            public const int PythOracleOffset = 65;
+
+            /// <summary>
+            /// The offset at which the switchboard oracle value begins.
+            /// </summary>
+            public const int SwitchboardOracleOffset = 97;
+
+            /// <summary>
+            /// The offset at which the available amount offset begins.
+            /// </summary>
+            public const int AvailableAmountOffset = 129;
+
+            /// <summary>
+            /// The offset at which the borrow amount value begins.
+            /// </summary>
+            public const int BorrowedAmountOffset = 137;
+
+            /// <summary>
+            /// The offset at which the cumulative borrow amount value begins.
+            /// </summary>
+            public const int CumulativeBorrowAmountOffset = 153;
+
+            /// <summary>
+            /// The offset at which the market price value begins.
+            /// </summary>
+            public const int MarketPriceOffset = 169;
         }
+
+        /// <summary>
+        /// Reserve liquidity mint address
+        /// </summary>
+        public PublicKey Mint;
+
+        /// <summary>
+        /// Reserve liquidity mint decimals
+        /// </summary>
+        public byte Decimals;
+
+        /// <summary>
+        /// Reserve liquidity supply address
+        /// </summary>
+        public PublicKey Supply;
+
+        /// <summary>
+        /// Reserve liquidity oracle account
+        /// </summary>
+        public PublicKey PythOracle;
 
         /// <summary>
         /// The switchboard oracle account.
@@ -30,25 +96,43 @@ namespace Solnet.Solend.Models
         public PublicKey SwitchboardOracle;
 
         /// <summary>
+        /// Reserve liquidity available
+        /// </summary>
+        public ulong AvailableAmount;
+
+        /// <summary>
+        /// Reserve liquidity borrowed
+        /// </summary>
+        public BigInteger BorrowedAmountWads;
+
+        /// <summary>
+        /// Reserve liquidity cumulative borrow rate
+        /// </summary>
+        public BigInteger CumulativeBorrowAmountWads;
+
+        /// <summary>
+        /// Reserve liquidity market price in quote currency
+        /// </summary>
+        public BigInteger MarketPrice;
+
+        /// <summary>
         /// Initialize the <see cref="ReserveLiquidity"/> with the given data.
         /// </summary>
         /// <param name="data">The byte array.</param>
-        public ReserveLiquidity(ReadOnlySpan<byte> data) : base(data[..Layout.Length])
+        public ReserveLiquidity(ReadOnlySpan<byte> data)
         {
-            if (data.Length != ExtraLayout.Length)
-                throw new ArgumentException($"{nameof(data)} has wrong size. Expected {ExtraLayout.Length} bytes, actual {data.Length} bytes.");
+            if (data.Length != Layout.Length)
+                throw new ArgumentException($"{nameof(data)} has wrong size. Expected {Layout.Length} bytes, actual {data.Length} bytes.");
 
-            // in solend, the ReserveLiquidity account has changes to what the values mean but the layout remains the same
-            // because of these changes we have to deserialize some attributes again
-            // in the future this may mean that subclassing `Programs.TokenLending.Models.ReserveLiquidity` may not be the best idea
-            // if the program undergoes more changes for future additions
-
-            // does not contain a `fee_receiver`, it is actually the `pyth_oracle_pubkey`
-            FeeReceiver = null;
-            Oracle = data.GetPubKey(Layout.FeeReceiverOffset); // the offset is the same, it just has a different purpose
-
-            // the `switchboard_oracle_pubkey` is in the same offset as the `oracle_pubkey` in the base token-lending
-            SwitchboardOracle = data.GetPubKey(Layout.OracleOffset);
+            Mint = data.GetPubKey(Layout.MintOffset);
+            Decimals = data.GetU8(Layout.DecimalsOffset);
+            Supply = data.GetPubKey(Layout.SupplyOffset);
+            PythOracle = data.GetPubKey(Layout.PythOracleOffset);
+            SwitchboardOracle = data.GetPubKey(Layout.SwitchboardOracleOffset);
+            AvailableAmount = data.GetU64(Layout.AvailableAmountOffset);
+            BorrowedAmountWads = data.GetBigInt(Layout.BorrowedAmountOffset, 16, true);
+            CumulativeBorrowAmountWads = data.GetBigInt(Layout.CumulativeBorrowAmountOffset, 16, true);
+            MarketPrice = data.GetBigInt(Layout.MarketPriceOffset, 16, true);
         }
 
         /// <summary>
@@ -56,6 +140,6 @@ namespace Solnet.Solend.Models
         /// </summary>
         /// <param name="data">The byte array.</param>
         /// <returns>The <see cref="ReserveLiquidity"/> instance.</returns>
-        public static new ReserveLiquidity Deserialize(byte[] data) => new(data.AsSpan());
+        public static ReserveLiquidity Deserialize(byte[] data) => new(data.AsSpan());
     }
 }
