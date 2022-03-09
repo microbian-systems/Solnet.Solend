@@ -160,22 +160,5 @@ namespace Solnet.Solend.Models
         /// <returns>The <see cref="ReserveConfig"/> instance.</returns>
         public static ReserveConfig Deserialize(byte[] data)
             => new(data.AsSpan());
-
-        /// <summary>
-        /// Serializes the <see cref="ReserveConfig"/> object to the given buffer at the desired offset.
-        /// </summary>
-        /// <param name="buffer">The buffer to serialize into.</param>
-        /// <param name="offset">The offset at which to begin serialization.</param>
-        public void Serialize(byte[] buffer, int offset = 0)
-        {
-            buffer.WriteU8(OptimalUtilizationRate, offset + Layout.OptimalUtilizationRateOffset);
-            buffer.WriteU8(LoanToValueRatio, offset + Layout.LoanToValueRatioOffset);
-            buffer.WriteU8(LiquidationBonus, offset + Layout.LiquidationBonusOffset);
-            buffer.WriteU8(LiquidationThreshold, offset + Layout.LiquidationThresholdOffset);
-            buffer.WriteU8(MinBorrowRate, offset + Layout.MinBorrowRateOffset);
-            buffer.WriteU8(OptimalBorrowRate, offset + Layout.OptimalBorrowRateOffset);
-            buffer.WriteU8(MaxBorrowRate, offset + Layout.MaxBorrowRateOffset);
-            Fees.Serialize(buffer, offset + Layout.FeesOffset);
-        }
     }
 }

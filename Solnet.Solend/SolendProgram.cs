@@ -58,19 +58,22 @@ namespace Solnet.Solend
         public static SolendProgram CreateMainNet() => new SolendProgram(MainNetProgramIdKey);
 
         /// <summary>
-        /// 
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.RefreshReserve"/> method.
         /// </summary>
         /// <param name="programIdKey">The public key of the program.</param>
-        /// <param name="reserve"></param>
-        /// <param name="reserveLiquidityOracle"></param>
-        /// <returns>The transaction instruction.</returns>
-        public static TransactionInstruction RefreshReserve(PublicKey programIdKey, PublicKey reserve, PublicKey reserveLiquidityOracle)
+        /// <param name="reserve">The reserve.</param>
+        /// <param name="reserveLiquidityPythOracle">The reserve liquidity pyth oracle.</param>
+        /// <param name="reserveLiquiditySwitchboardOracle">The reserve liquidity switchboard oracle.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
+        public static TransactionInstruction RefreshReserve(PublicKey programIdKey, PublicKey reserve,
+            PublicKey reserveLiquidityPythOracle, PublicKey reserveLiquiditySwitchboardOracle)
         {
 
             List<AccountMeta> keys = new()
             {
                 AccountMeta.Writable(reserve, false),
-                AccountMeta.ReadOnly(reserveLiquidityOracle, false),
+                AccountMeta.ReadOnly(reserveLiquidityPythOracle, false),
+                AccountMeta.ReadOnly(reserveLiquiditySwitchboardOracle, false),
                 AccountMeta.ReadOnly(SysVars.ClockKey, false),
             };
             return new TransactionInstruction
@@ -82,18 +85,29 @@ namespace Solnet.Solend
         }
 
         /// <summary>
-        /// 
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.RefreshReserve"/> method.
+        /// </summary>
+        /// <param name="reserve">The reserve.</param>
+        /// <param name="reserveLiquidityPythOracle">The reserve liquidity pyth oracle.</param>
+        /// <param name="reserveLiquiditySwitchboardOracle">The reserve liquidity switchboard oracle.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
+        public TransactionInstruction RefreshReserve(PublicKey reserve,
+            PublicKey reserveLiquidityPythOracle, PublicKey reserveLiquiditySwitchboardOracle) 
+            => RefreshReserve(ProgramIdKey, reserve, reserveLiquidityPythOracle, reserveLiquiditySwitchboardOracle);
+
+        /// <summary>
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.DepositReserveLiquidity"/> method.
         /// </summary>
         /// <param name="programIdKey">The public key of the program.</param>
-        /// <param name="liquidityAmount"></param>
-        /// <param name="sourceLiquidity"></param>
-        /// <param name="destinationCollateral"></param>
-        /// <param name="reserve"></param>
-        /// <param name="reserveLiquiditySupply"></param>
-        /// <param name="reserveCollateralMint"></param>
-        /// <param name="lendingMarket"></param>
-        /// <param name="userTransferAuthority"></param>
-        /// <returns>The transaction instruction.</returns>
+        /// <param name="liquidityAmount">The liquidity amount.</param>
+        /// <param name="sourceLiquidity">The source liquidity token account.</param>
+        /// <param name="destinationCollateral">The destination collateral token account.</param>
+        /// <param name="reserve">The reserve.</param>
+        /// <param name="reserveLiquiditySupply">The reserve liquidity supply.</param>
+        /// <param name="reserveCollateralMint">The reserve collateral mint.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="userTransferAuthority">The user transfer authority.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
         public static TransactionInstruction DepositReserveLiquidity(PublicKey programIdKey, ulong liquidityAmount,
             PublicKey sourceLiquidity, PublicKey destinationCollateral, PublicKey reserve, PublicKey reserveLiquiditySupply,
             PublicKey reserveCollateralMint, PublicKey lendingMarket, PublicKey userTransferAuthority)
@@ -122,21 +136,39 @@ namespace Solnet.Solend
         }
 
         /// <summary>
-        /// 
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.DepositReserveLiquidity"/> method.
+        /// </summary>
+        /// <param name="liquidityAmount">The liquidity amount.</param>
+        /// <param name="sourceLiquidity">The source liquidity token account.</param>
+        /// <param name="destinationCollateral">The destination collateral token account.</param>
+        /// <param name="reserve">The reserve.</param>
+        /// <param name="reserveLiquiditySupply">The reserve liquidity supply.</param>
+        /// <param name="reserveCollateralMint">The reserve collateral mint.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="userTransferAuthority">The user transfer authority.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
+        public TransactionInstruction DepositReserveLiquidity(ulong liquidityAmount,
+            PublicKey sourceLiquidity, PublicKey destinationCollateral, PublicKey reserve, PublicKey reserveLiquiditySupply,
+            PublicKey reserveCollateralMint, PublicKey lendingMarket, PublicKey userTransferAuthority)
+            => DepositReserveLiquidity(ProgramIdKey, liquidityAmount, sourceLiquidity, destinationCollateral, reserve,
+                reserveLiquiditySupply, reserveCollateralMint, lendingMarket, userTransferAuthority);
+
+        /// <summary>
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.RedeemReserveCollateral"/> method.
         /// </summary>
         /// <param name="programIdKey">The public key of the program.</param>
-        /// <param name="collateralAmount"></param>
-        /// <param name="sourceCollateral"></param>
-        /// <param name="destinationLiquidity"></param>
-        /// <param name="reserve"></param>
-        /// <param name="reserveCollateralMint"></param>
-        /// <param name="reserveCollateralSupply"></param>
-        /// <param name="lendingMarket"></param>
-        /// <param name="userTransferAuthority"></param>
-        /// <returns>The transaction instruction.</returns>
+        /// <param name="collateralAmount">The collateral amount.</param>
+        /// <param name="sourceCollateral">The source collateral token account.</param>
+        /// <param name="destinationLiquidity">The destination collateral token account.</param>
+        /// <param name="reserve">The reserve.</param>
+        /// <param name="reserveCollateralMint">The reserve collateral mint.</param>
+        /// <param name="reserveLiquiditySupply">The reserve liquidity supply.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="userTransferAuthority">The user transfer authority.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
         public static TransactionInstruction RedeemReserveCollateral(PublicKey programIdKey, ulong collateralAmount,
             PublicKey sourceCollateral, PublicKey destinationLiquidity, PublicKey reserve, PublicKey reserveCollateralMint,
-            PublicKey reserveCollateralSupply, PublicKey lendingMarket, PublicKey userTransferAuthority)
+            PublicKey reserveLiquiditySupply, PublicKey lendingMarket, PublicKey userTransferAuthority)
         {
             PublicKey lendingMarketAuthority = SolendProgramData.DeriveLendingMarketAuthority(lendingMarket, programIdKey);
 
@@ -146,7 +178,7 @@ namespace Solnet.Solend
                 AccountMeta.Writable(destinationLiquidity, false),
                 AccountMeta.Writable(reserve, false),
                 AccountMeta.Writable(reserveCollateralMint, false),
-                AccountMeta.Writable(reserveCollateralSupply, false),
+                AccountMeta.Writable(reserveLiquiditySupply, false),
                 AccountMeta.ReadOnly(lendingMarket, false),
                 AccountMeta.ReadOnly(lendingMarketAuthority, false),
                 AccountMeta.ReadOnly(userTransferAuthority, true),
@@ -162,13 +194,31 @@ namespace Solnet.Solend
         }
 
         /// <summary>
-        /// 
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.RedeemReserveCollateral"/> method.
+        /// </summary>
+        /// <param name="collateralAmount">The collateral amount.</param>
+        /// <param name="sourceCollateral">The source collateral token account.</param>
+        /// <param name="destinationLiquidity">The destination collateral token account.</param>
+        /// <param name="reserve">The reserve.</param>
+        /// <param name="reserveCollateralMint">The reserve collateral mint.</param>
+        /// <param name="reserveLiquiditySupply">The reserve liquidity supply.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="userTransferAuthority">The user transfer authority.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
+        public TransactionInstruction RedeemReserveCollateral(ulong collateralAmount,
+            PublicKey sourceCollateral, PublicKey destinationLiquidity, PublicKey reserve, PublicKey reserveCollateralMint,
+            PublicKey reserveLiquiditySupply, PublicKey lendingMarket, PublicKey userTransferAuthority)
+            => RedeemReserveCollateral(ProgramIdKey, collateralAmount, sourceCollateral, destinationLiquidity, reserve,
+                reserveCollateralMint, reserveLiquiditySupply, lendingMarket, userTransferAuthority);
+
+        /// <summary>
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.InitializeObligation"/> method.
         /// </summary>
         /// <param name="programIdKey">The public key of the program.</param>
-        /// <param name="obligation"></param>
-        /// <param name="lendingMarket"></param>
-        /// <param name="obligationOwner"></param>
-        /// <returns>The transaction instruction.</returns>
+        /// <param name="obligation">The obligation.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="obligationOwner">The obligation owner.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
         public static TransactionInstruction InitializeObligation(PublicKey programIdKey, PublicKey obligation,
             PublicKey lendingMarket, PublicKey obligationOwner)
         {
@@ -190,12 +240,23 @@ namespace Solnet.Solend
         }
 
         /// <summary>
-        /// 
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.InitializeObligation"/> method.
+        /// </summary>
+        /// <param name="obligation">The obligation.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="obligationOwner">The obligation owner.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
+        public TransactionInstruction InitializeObligation(PublicKey obligation,
+            PublicKey lendingMarket, PublicKey obligationOwner)
+            => InitializeObligation(ProgramIdKey, obligation, lendingMarket, obligationOwner);
+
+        /// <summary>
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.RefreshObligation"/> method.
         /// </summary>
         /// <param name="programIdKey">The public key of the program.</param>
-        /// <param name="obligation"></param>
-        /// <param name="reserves"></param>
-        /// <returns>The transaction instruction.</returns>
+        /// <param name="obligation">The obligation.</param>
+        /// <param name="reserves">The reserves.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
         public static TransactionInstruction RefreshObligation(PublicKey programIdKey, PublicKey obligation,
             IList<PublicKey> reserves)
         {
@@ -216,18 +277,28 @@ namespace Solnet.Solend
         }
 
         /// <summary>
-        /// 
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.RefreshObligation"/> method.
+        /// </summary>
+        /// <param name="obligation">The obligation.</param>
+        /// <param name="reserves">The reserves.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
+        public TransactionInstruction RefreshObligation(PublicKey obligation,
+            IList<PublicKey> reserves)
+            => RefreshObligation(ProgramIdKey, obligation, reserves);
+
+        /// <summary>
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.DepositObligationCollateral"/> method.
         /// </summary>
         /// <param name="programIdKey">The public key of the program.</param>
-        /// <param name="collateralAmount"></param>
-        /// <param name="sourceCollateral"></param>
-        /// <param name="destinationCollateral"></param>
-        /// <param name="depositReserve"></param>
-        /// <param name="obligation"></param>
-        /// <param name="lendingMarket"></param>
-        /// <param name="obligationOwner"></param>
-        /// <param name="userTransferAuthority"></param>
-        /// <returns>The transaction instruction.</returns>
+        /// <param name="collateralAmount">The collateral amount.</param>
+        /// <param name="sourceCollateral">The source collateral token account.</param>
+        /// <param name="destinationCollateral">The destination collateral token account.</param>
+        /// <param name="depositReserve">The deposit reserve.</param>
+        /// <param name="obligation">The obligation.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="obligationOwner">The obligation owner.</param>
+        /// <param name="userTransferAuthority">The user transfer authority.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
         public static TransactionInstruction DepositObligationCollateral(PublicKey programIdKey, ulong collateralAmount,
             PublicKey sourceCollateral, PublicKey destinationCollateral, PublicKey depositReserve, PublicKey obligation,
             PublicKey lendingMarket, PublicKey obligationOwner, PublicKey userTransferAuthority)
@@ -245,7 +316,6 @@ namespace Solnet.Solend
                 AccountMeta.ReadOnly(TokenProgram.ProgramIdKey, false)
             };
 
-
             return new TransactionInstruction
             {
                 ProgramId = programIdKey,
@@ -255,17 +325,35 @@ namespace Solnet.Solend
         }
 
         /// <summary>
-        /// 
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.DepositObligationCollateral"/> method.
+        /// </summary>
+        /// <param name="collateralAmount">The collateral amount.</param>
+        /// <param name="sourceCollateral">The source collateral token account.</param>
+        /// <param name="destinationCollateral">The destination collateral token account.</param>
+        /// <param name="depositReserve">The deposit reserve.</param>
+        /// <param name="obligation">The obligation.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="obligationOwner">The obligation owner.</param>
+        /// <param name="userTransferAuthority">The user transfer authority.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
+        public TransactionInstruction DepositObligationCollateral(ulong collateralAmount,
+            PublicKey sourceCollateral, PublicKey destinationCollateral, PublicKey depositReserve, PublicKey obligation,
+            PublicKey lendingMarket, PublicKey obligationOwner, PublicKey userTransferAuthority)
+            => DepositObligationCollateral(ProgramIdKey, collateralAmount, sourceCollateral, destinationCollateral,
+                depositReserve, obligation, lendingMarket, obligationOwner, userTransferAuthority);
+
+        /// <summary>
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.WithdrawObligationCollateral"/> method.
         /// </summary>
         /// <param name="programIdKey">The public key of the program.</param>
-        /// <param name="collateralAmount"></param>
-        /// <param name="sourceCollateral"></param>
-        /// <param name="destinationCollateral"></param>
-        /// <param name="withdrawReserve"></param>
-        /// <param name="obligation"></param>
-        /// <param name="lendingMarket"></param>
-        /// <param name="obligationOwner"></param>
-        /// <returns>The transaction instruction.</returns>
+        /// <param name="collateralAmount">The collateral amount.</param>
+        /// <param name="sourceCollateral">The source collateral token account.</param>
+        /// <param name="destinationCollateral">The destination collateral token account.</param>
+        /// <param name="withdrawReserve">The withdraw reserve.</param>
+        /// <param name="obligation">The obligation.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="obligationOwner">The obligation owner.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
         public static TransactionInstruction WithdrawObligationCollateral(PublicKey programIdKey, ulong collateralAmount,
             PublicKey sourceCollateral, PublicKey destinationCollateral, PublicKey withdrawReserve, PublicKey obligation,
             PublicKey lendingMarket, PublicKey obligationOwner)
@@ -285,7 +373,6 @@ namespace Solnet.Solend
                 AccountMeta.ReadOnly(TokenProgram.ProgramIdKey, false)
             };
 
-
             return new TransactionInstruction
             {
                 ProgramId = programIdKey,
@@ -295,20 +382,37 @@ namespace Solnet.Solend
         }
 
         /// <summary>
-        /// 
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.WithdrawObligationCollateral"/> method.
+        /// </summary>
+        /// <param name="collateralAmount">The collateral amount.</param>
+        /// <param name="sourceCollateral">The source collateral token account.</param>
+        /// <param name="destinationCollateral">The destination collateral token account.</param>
+        /// <param name="withdrawReserve">The withdraw reserve.</param>
+        /// <param name="obligation">The obligation.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="obligationOwner">The obligation owner.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
+        public TransactionInstruction WithdrawObligationCollateral(ulong collateralAmount,
+            PublicKey sourceCollateral, PublicKey destinationCollateral, PublicKey withdrawReserve, PublicKey obligation,
+            PublicKey lendingMarket, PublicKey obligationOwner)
+            => WithdrawObligationCollateral(ProgramIdKey, collateralAmount, sourceCollateral, destinationCollateral,
+                withdrawReserve, obligation, lendingMarket, obligationOwner);
+
+        /// <summary>
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.BorrowObligationLiquidity"/> method.
         /// </summary>
         /// <param name="programIdKey">The public key of the program.</param>
-        /// <param name="liquidityAmount"></param>
-        /// <param name="sourceLiquidity"></param>
-        /// <param name="destinationLiquidity"></param>
-        /// <param name="borrowReserve"></param>
-        /// <param name="borrowReserveLiquidityFeeReceiver"></param>
-        /// <param name="obligation"></param>
-        /// <param name="lendingMarket"></param>
-        /// <param name="obligationOwner"></param>
-        /// <param name="hostFeeReceiver"></param>
-        /// <returns>The transaction instruction.</returns>
-        public static TransactionInstruction BorrowObligationLiduidity(PublicKey programIdKey, ulong liquidityAmount,
+        /// <param name="liquidityAmount">The liquidity amount.</param>
+        /// <param name="sourceLiquidity">The source liquidity token account.</param>
+        /// <param name="destinationLiquidity">The destination liquidity token account.</param>
+        /// <param name="borrowReserve">The borrow reserve.</param>
+        /// <param name="borrowReserveLiquidityFeeReceiver">The borrow reserve liquidity fee receiver.</param>
+        /// <param name="obligation">The obligation.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="obligationOwner">The obligation owner.</param>
+        /// <param name="hostFeeReceiver">The fee receiver.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
+        public static TransactionInstruction BorrowObligationLiquidity(PublicKey programIdKey, ulong liquidityAmount,
             PublicKey sourceLiquidity, PublicKey destinationLiquidity, PublicKey borrowReserve,
             PublicKey borrowReserveLiquidityFeeReceiver, PublicKey obligation, PublicKey lendingMarket,
             PublicKey obligationOwner, PublicKey hostFeeReceiver = null)
@@ -334,23 +438,43 @@ namespace Solnet.Solend
             return new TransactionInstruction
             {
                 ProgramId = programIdKey,
-                Data = SolendProgramData.EncodeBorrowObligationLiduidityData(liquidityAmount),
+                Data = SolendProgramData.EncodeBorrowObligationLiquidityData(liquidityAmount),
                 Keys = keys
             };
         }
 
         /// <summary>
-        /// 
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.BorrowObligationLiquidity"/> method.
+        /// </summary>
+        /// <param name="liquidityAmount">The liquidity amount.</param>
+        /// <param name="sourceLiquidity">The source liquidity token account.</param>
+        /// <param name="destinationLiquidity">The destination liquidity token account.</param>
+        /// <param name="borrowReserve">The borrow reserve.</param>
+        /// <param name="borrowReserveLiquidityFeeReceiver">The borrow reserve liquidity fee receiver.</param>
+        /// <param name="obligation">The obligation.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="obligationOwner">The obligation owner.</param>
+        /// <param name="hostFeeReceiver">The fee receiver.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
+        public TransactionInstruction BorrowObligationLiquidity(ulong liquidityAmount,
+            PublicKey sourceLiquidity, PublicKey destinationLiquidity, PublicKey borrowReserve,
+            PublicKey borrowReserveLiquidityFeeReceiver, PublicKey obligation, PublicKey lendingMarket,
+            PublicKey obligationOwner, PublicKey hostFeeReceiver = null)
+            => BorrowObligationLiquidity(ProgramIdKey, liquidityAmount, sourceLiquidity, destinationLiquidity, borrowReserve,
+                borrowReserveLiquidityFeeReceiver, obligation, lendingMarket, obligationOwner, hostFeeReceiver);
+
+        /// <summary>
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.RepayObligationLiquidity"/> method.
         /// </summary>
         /// <param name="programIdKey">The public key of the program.</param>
-        /// <param name="liquidityAmount"></param>
-        /// <param name="sourceLiquidity"></param>
-        /// <param name="destinationLiquidity"></param>
-        /// <param name="repayReserve"></param>
-        /// <param name="obligation"></param>
-        /// <param name="lendingMarket"></param>
-        /// <param name="userTransferAuthority"></param>
-        /// <returns>The transaction instruction.</returns>
+        /// <param name="liquidityAmount">The liquidity amount.</param>
+        /// <param name="sourceLiquidity">The source liquidity token account.</param>
+        /// <param name="destinationLiquidity">The destination liquidity token account.</param>
+        /// <param name="repayReserve">The repay reserve.</param>
+        /// <param name="obligation">The obligation.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="userTransferAuthority">The user transfer authority.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
         public static TransactionInstruction RepayObligationLiduidity(PublicKey programIdKey, ulong liquidityAmount,
             PublicKey sourceLiquidity, PublicKey destinationLiquidity, PublicKey repayReserve, PublicKey obligation,
             PublicKey lendingMarket, PublicKey userTransferAuthority)
@@ -367,7 +491,6 @@ namespace Solnet.Solend
                 AccountMeta.ReadOnly(TokenProgram.ProgramIdKey, false)
             };
 
-
             return new TransactionInstruction
             {
                 ProgramId = programIdKey,
@@ -377,76 +500,48 @@ namespace Solnet.Solend
         }
 
         /// <summary>
-        /// 
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.RepayObligationLiquidity"/> method.
         /// </summary>
-        /// <param name="programIdKey">The public key of the program.</param>
-        /// <param name="liquidityAmount"></param>
-        /// <param name="sourceLiquidity"></param>
-        /// <param name="destinationCollateral"></param>
-        /// <param name="repayReserve"></param>
-        /// <param name="repayReserveLiquiditySupply"></param>
-        /// <param name="withdrawReserve"></param>
-        /// <param name="withdrawReserveCollateralSupply"></param>
-        /// <param name="obligation"></param>
-        /// <param name="lendingMarket"></param>
-        /// <param name="userTransferAuthority"></param>
-        /// <returns>The transaction instruction.</returns>
-        public static TransactionInstruction LiquidateObligation(PublicKey programIdKey, ulong liquidityAmount,
-            PublicKey sourceLiquidity, PublicKey destinationCollateral, PublicKey repayReserve,
-            PublicKey repayReserveLiquiditySupply, PublicKey withdrawReserve, PublicKey withdrawReserveCollateralSupply,
-            PublicKey obligation, PublicKey lendingMarket, PublicKey userTransferAuthority)
-        {
-            PublicKey lendingMarketAuthority = SolendProgramData.DeriveLendingMarketAuthority(lendingMarket, programIdKey);
-
-            List<AccountMeta> keys = new()
-            {
-                AccountMeta.Writable(sourceLiquidity, false),
-                AccountMeta.Writable(destinationCollateral, false),
-                AccountMeta.Writable(repayReserve, false),
-                AccountMeta.Writable(repayReserveLiquiditySupply, false),
-                AccountMeta.ReadOnly(withdrawReserve, false),
-                AccountMeta.Writable(withdrawReserveCollateralSupply, false),
-                AccountMeta.Writable(obligation, false),
-                AccountMeta.ReadOnly(lendingMarket, false),
-                AccountMeta.ReadOnly(lendingMarketAuthority, false),
-                AccountMeta.ReadOnly(userTransferAuthority, true),
-                AccountMeta.ReadOnly(SysVars.ClockKey, false),
-                AccountMeta.ReadOnly(TokenProgram.ProgramIdKey, false)
-            };
-
-
-            return new TransactionInstruction
-            {
-                ProgramId = programIdKey,
-                Data = SolendProgramData.EncodeLiquidateObligationData(liquidityAmount),
-                Keys = keys
-            };
-        }
+        /// <param name="liquidityAmount">The liquidity amount.</param>
+        /// <param name="sourceLiquidity">The source liquidity token account.</param>
+        /// <param name="destinationLiquidity">The destination liquidity token account.</param>
+        /// <param name="repayReserve">The repay reserve.</param>
+        /// <param name="obligation">The obligation.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="userTransferAuthority">The user transfer authority.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
+        public TransactionInstruction RepayObligationLiduidity(ulong liquidityAmount,
+            PublicKey sourceLiquidity, PublicKey destinationLiquidity, PublicKey repayReserve, PublicKey obligation,
+            PublicKey lendingMarket, PublicKey userTransferAuthority)
+            => RepayObligationLiduidity(ProgramIdKey, liquidityAmount, sourceLiquidity, destinationLiquidity,
+                repayReserve, obligation, lendingMarket, userTransferAuthority);
 
         /// <summary>
-        /// 
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.DepositReserveLiquidityAndObligationCollateral"/> method.
         /// </summary>
-        /// <param name="liquidityAmount"></param>
-        /// <param name="sourceLiquidity"></param>
-        /// <param name="destinationCollateral"></param>
-        /// <param name="reserve"></param>
-        /// <param name="reserveLiquiditySupply"></param>
-        /// <param name="reserveCollateralMint"></param>
-        /// <param name="lendingMarket"></param>
-        /// <param name="destinationDepositCollateral"></param>
-        /// <param name="obligation"></param>
-        /// <param name="obligationOwner"></param>
-        /// <param name="reserveLiquidityPyth"></param>
-        /// <param name="reserveLiquiditySwitchboard"></param>
-        /// <param name="userTransferAuthority"></param>
-        /// <returns></returns>
-        public TransactionInstruction DepositReserveLiquidityAndObligationCollateral(ulong liquidityAmount,
+        /// <param name="programIdKey">The public key of the program.</param>
+        /// <param name="liquidityAmount">The liquidity amount.</param>
+        /// <param name="sourceLiquidity">The source liquidity token account.</param>
+        /// <param name="destinationCollateral">The destination collateral token account.</param>
+        /// <param name="reserve">The reserve.</param>
+        /// <param name="reserveLiquiditySupply">The reserve liquidity supply.</param>
+        /// <param name="reserveCollateralMint">The reserve collateral mint.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="destinationDepositCollateral">The destination deposit collateral.</param>
+        /// <param name="obligation">The obligation.</param>
+        /// <param name="obligationOwner">The obligation owner.</param>
+        /// <param name="reserveLiquidityPyth">The reserve liquidity pyth oracle.</param>
+        /// <param name="reserveLiquiditySwitchboard">The reserve liquidity switchboard oracle.</param>
+        /// <param name="userTransferAuthority">The user transfer authority.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
+        public static TransactionInstruction DepositReserveLiquidityAndObligationCollateral(PublicKey programIdKey, ulong liquidityAmount,
             PublicKey sourceLiquidity, PublicKey destinationCollateral, PublicKey reserve, PublicKey reserveLiquiditySupply,
             PublicKey reserveCollateralMint, PublicKey lendingMarket, PublicKey destinationDepositCollateral,
             PublicKey obligation, PublicKey obligationOwner, PublicKey reserveLiquidityPyth, PublicKey reserveLiquiditySwitchboard,
             PublicKey userTransferAuthority)
         {
-            PublicKey lendingMarketAuthority = SolendProgramData.DeriveLendingMarketAuthority(lendingMarket, ProgramIdKey);
+            PublicKey lendingMarketAuthority = SolendProgramData.DeriveLendingMarketAuthority(lendingMarket, programIdKey);
+
             List<AccountMeta> keys = new()
             {
                 AccountMeta.Writable(sourceLiquidity, false),
@@ -467,33 +562,60 @@ namespace Solnet.Solend
             };
             return new TransactionInstruction
             {
-                ProgramId = ProgramIdKey.KeyBytes,
+                ProgramId = programIdKey,
                 Keys = keys,
                 Data = SolendProgramData.EncodeDepositReserveLiquidityAndObligationCollateralData(liquidityAmount)
             };
         }
 
         /// <summary>
-        /// 
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.DepositReserveLiquidityAndObligationCollateral"/> method.
         /// </summary>
-        /// <param name="collateralAmount"></param>
-        /// <param name="sourceCollateral"></param>
-        /// <param name="destinationCollateral"></param>
-        /// <param name="withdrawReserve"></param>
-        /// <param name="obligation"></param>
-        /// <param name="lendingMarket"></param>
-        /// <param name="destinationLiquidity"></param>
-        /// <param name="reserveCollateralMint"></param>
-        /// <param name="reserveLiquiditySupply"></param>
-        /// <param name="obligationOwner"></param>
-        /// <param name="userTransferAuthority"></param>
-        /// <returns></returns>
-        public TransactionInstruction WithdrawObligationCollateralAndRedeemReserveCollateral(ulong collateralAmount,
+        /// <param name="liquidityAmount">The liquidity amount.</param>
+        /// <param name="sourceLiquidity">The source liquidity token account.</param>
+        /// <param name="destinationCollateral">The destination collateral token account.</param>
+        /// <param name="reserve">The reserve.</param>
+        /// <param name="reserveLiquiditySupply">The reserve liquidity supply.</param>
+        /// <param name="reserveCollateralMint">The reserve collateral mint.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="destinationDepositCollateral">The destination deposit collateral.</param>
+        /// <param name="obligation">The obligation.</param>
+        /// <param name="obligationOwner">The obligation owner.</param>
+        /// <param name="reserveLiquidityPyth">The reserve liquidity pyth oracle.</param>
+        /// <param name="reserveLiquiditySwitchboard">The reserve liquidity switchboard oracle.</param>
+        /// <param name="userTransferAuthority">The user transfer authority.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
+        public TransactionInstruction DepositReserveLiquidityAndObligationCollateral(ulong liquidityAmount,
+            PublicKey sourceLiquidity, PublicKey destinationCollateral, PublicKey reserve, PublicKey reserveLiquiditySupply,
+            PublicKey reserveCollateralMint, PublicKey lendingMarket, PublicKey destinationDepositCollateral,
+            PublicKey obligation, PublicKey obligationOwner, PublicKey reserveLiquidityPyth, PublicKey reserveLiquiditySwitchboard,
+            PublicKey userTransferAuthority)
+            => DepositReserveLiquidityAndObligationCollateral(ProgramIdKey, liquidityAmount, sourceLiquidity, destinationCollateral,
+                reserve, reserveLiquiditySupply, reserveCollateralMint, lendingMarket, destinationDepositCollateral, obligation,
+                obligationOwner, reserveLiquidityPyth, reserveLiquiditySwitchboard, userTransferAuthority);
+
+        /// <summary>
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.WithdrawObligationCollateralAndRedeemReserveCollateral"/> method.
+        /// </summary>
+        /// <param name="programIdKey">The public key of the program.</param>
+        /// <param name="collateralAmount">The collateral amount.</param>
+        /// <param name="sourceCollateral">The source collateral token account.</param>
+        /// <param name="destinationCollateral">The destination collateral token account.</param>
+        /// <param name="withdrawReserve">The reserve.</param>
+        /// <param name="obligation">The obligation.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="destinationLiquidity">The destination liquidity.</param>
+        /// <param name="reserveCollateralMint">The reserve collateral mint.</param>
+        /// <param name="reserveLiquiditySupply">The reserve liquidity supply.</param>
+        /// <param name="obligationOwner">The obligation owner.</param>
+        /// <param name="userTransferAuthority">The user transfer authority.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
+        public static TransactionInstruction WithdrawObligationCollateralAndRedeemReserveCollateral(PublicKey programIdKey, ulong collateralAmount,
             PublicKey sourceCollateral, PublicKey destinationCollateral, PublicKey withdrawReserve, PublicKey obligation,
             PublicKey lendingMarket, PublicKey destinationLiquidity, PublicKey reserveCollateralMint, PublicKey reserveLiquiditySupply,
             PublicKey obligationOwner, PublicKey userTransferAuthority)
         {
-            PublicKey lendingMarketAuthority = SolendProgramData.DeriveLendingMarketAuthority(lendingMarket, ProgramIdKey);
+            PublicKey lendingMarketAuthority = SolendProgramData.DeriveLendingMarketAuthority(lendingMarket, programIdKey);
             List<AccountMeta> keys = new()
             {
                 AccountMeta.Writable(sourceCollateral, false),
@@ -512,10 +634,56 @@ namespace Solnet.Solend
             };
             return new TransactionInstruction
             {
-                ProgramId = ProgramIdKey.KeyBytes,
+                ProgramId = programIdKey,
                 Keys = keys,
-                Data = SolendProgramData.EncodeDepositReserveLiquidityAndObligationCollateralData(collateralAmount)
+                Data = SolendProgramData.EncodeWithdrawObligationCollateralAndRedeemReserveCollateralData(collateralAmount)
             };
+        }
+
+        /// <summary>
+        /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.WithdrawObligationCollateralAndRedeemReserveCollateral"/> method.
+        /// </summary>
+        /// <param name="collateralAmount">The collateral amount.</param>
+        /// <param name="sourceCollateral">The source collateral token account.</param>
+        /// <param name="destinationCollateral">The destination collateral token account.</param>
+        /// <param name="withdrawReserve">The reserve.</param>
+        /// <param name="obligation">The obligation.</param>
+        /// <param name="lendingMarket">The lending market.</param>
+        /// <param name="destinationLiquidity">The destination liquidity.</param>
+        /// <param name="reserveCollateralMint">The reserve collateral mint.</param>
+        /// <param name="reserveLiquiditySupply">The reserve liquidity supply.</param>
+        /// <param name="obligationOwner">The obligation owner.</param>
+        /// <param name="userTransferAuthority">The user transfer authority.</param>
+        /// <returns>The <see cref="TransactionInstruction"/>.</returns>
+        public TransactionInstruction WithdrawObligationCollateralAndRedeemReserveCollateral(ulong collateralAmount,
+            PublicKey sourceCollateral, PublicKey destinationCollateral, PublicKey withdrawReserve, PublicKey obligation,
+            PublicKey lendingMarket, PublicKey destinationLiquidity, PublicKey reserveCollateralMint, PublicKey reserveLiquiditySupply,
+            PublicKey obligationOwner, PublicKey userTransferAuthority)
+            => WithdrawObligationCollateralAndRedeemReserveCollateral(ProgramIdKey, collateralAmount, sourceCollateral,
+                destinationCollateral, withdrawReserve,obligation, lendingMarket, destinationLiquidity,
+                reserveCollateralMint, reserveLiquiditySupply, obligationOwner, userTransferAuthority);
+
+        /// <summary>
+        /// Derives an obligation's address for a given market and owner.
+        /// </summary>
+        /// <param name="owner">The owner's public key.</param>
+        /// <param name="market">The market's public key.</param>
+        /// <returns>The obligation address.</returns>
+        public PublicKey DeriveObligationAddress(PublicKey owner, PublicKey market)
+            => DeriveObligationAddress(owner, market, ProgramIdKey);
+
+        /// <summary>
+        /// Derives an obligation's address for a given lending market, owner and program id.
+        /// </summary>
+        /// <param name="owner">The owner's public key.</param>
+        /// <param name="market">The market's public key.</param>
+        /// <param name="programId">The program id.</param>
+        /// <returns>The obligation address.</returns>
+        public static PublicKey DeriveObligationAddress(PublicKey owner, PublicKey market, PublicKey programId)
+        {
+            var success = PublicKey.TryCreateWithSeed(owner, market.Key[..32], programId, out var pubkey);
+
+            return success ? pubkey : null;
         }
 
         /// <summary>
@@ -542,11 +710,32 @@ namespace Solnet.Solend
 
             switch (instructionValue)
             {
+                case SolendProgramInstructions.Values.InitializeObligation:
+                    SolendProgramData.DecodeInitializeObligationData(decodedInstruction, keys, keyIndices);
+                    break;
                 case SolendProgramInstructions.Values.RefreshReserve:
                     SolendProgramData.DecodeRefreshReserveData(decodedInstruction, keys, keyIndices);
                     break;
-                case SolendProgramInstructions.Values.InitializeObligation:
-                    SolendProgramData.DecodeInitializeObligationData(decodedInstruction, keys, keyIndices);
+                case SolendProgramInstructions.Values.RefreshObligation:
+                    SolendProgramData.DecodeRefreshObligationData(decodedInstruction, keys, keyIndices);
+                    break;
+                case SolendProgramInstructions.Values.DepositReserveLiquidity:
+                    SolendProgramData.DecodeDepositReserveLiquidityData(decodedInstruction, data, keys, keyIndices);
+                    break;
+                case SolendProgramInstructions.Values.RedeemReserveCollateral:
+                    SolendProgramData.DecodeRedeemReserveCollateralData(decodedInstruction, data, keys, keyIndices);
+                    break;
+                case SolendProgramInstructions.Values.DepositObligationCollateral:
+                    SolendProgramData.DecodeDepositObligationCollateralData(decodedInstruction, data, keys, keyIndices);
+                    break;
+                case SolendProgramInstructions.Values.WithdrawObligationCollateral:
+                    SolendProgramData.DecodeWithdrawObligationCollateralData(decodedInstruction, data, keys, keyIndices);
+                    break;
+                case SolendProgramInstructions.Values.BorrowObligationLiquidity:
+                    SolendProgramData.DecodeBorrowObligationLiquidityData(decodedInstruction, data, keys, keyIndices);
+                    break;
+                case SolendProgramInstructions.Values.RepayObligationLiquidity:
+                    SolendProgramData.DecodeRepayObligationLiduidityData(decodedInstruction, data, keys, keyIndices);
                     break;
                 case SolendProgramInstructions.Values.DepositReserveLiquidityAndObligationCollateral:
                     SolendProgramData.DecodeDepositReserveLiquidityAndObligationCollateralData(decodedInstruction, data, keys, keyIndices);

@@ -105,6 +105,20 @@ namespace Solnet.Solend.Models
         public static Reserve Deserialize(byte[] data) => new(data.AsSpan());
 
         /// <summary>
+        /// Gets the collateral token exchange rate.
+        /// </summary>
+        /// <returns>The exchange rate.</returns>
+        public decimal GetCTokenExchangeRate()
+        {
+            BigInteger totalLiquidityWads = Liquidity.AvailableAmount * Constants.Wad;
+            BigInteger totalDepositsWads = Liquidity.BorrowedAmountWads + totalLiquidityWads;
+
+            decimal div = (decimal) (totalDepositsWads / Collateral.TotalSupply);
+
+            return div / (decimal) Constants.Wad;
+        }
+
+        /// <summary>
         /// Gets the total token supply.
         /// </summary>
         /// <returns>The total token supply.</returns>
@@ -119,9 +133,16 @@ namespace Solnet.Solend.Models
             => Liquidity.AvailableAmount / (decimal)Math.Pow(10, Liquidity.Decimals);
 
         /// <summary>
-        /// Gets the total token supply.
+        /// Gets the available amount in USD.
         /// </summary>
-        /// <returns>The total token supply.</returns>
+        /// <returns>The available amount in USD.</returns>
+        public decimal GetAvailableAmountUsd()
+            => GetAvailableAmount() * GetMarketPrice();
+
+        /// <summary>
+        /// Gets the total token supply in USD.
+        /// </summary>
+        /// <returns>The total token supply in USD.</returns>
         public decimal GetTotalSupplyUsd()
             => GetTotalSupply() * GetMarketPrice();
 
@@ -166,7 +187,7 @@ namespace Solnet.Solend.Models
         /// <returns>The supply APY.</returns>
         public decimal CalculateSupplyApy()
         {
-            double apr = (double)CalculateSupplyApr();
+            decimal apr = CalculateSupplyApr();
 
             return CalculateApy(apr);
         }
@@ -209,7 +230,7 @@ namespace Solnet.Solend.Models
         /// <returns>The borrow APY.</returns>
         public decimal CalculateBorrowApy()
         {
-            double apr = (double)CalculateBorrowApr();
+            decimal apr = CalculateBorrowApr();
 
             return CalculateApy(apr);
         }
@@ -219,9 +240,9 @@ namespace Solnet.Solend.Models
         /// </summary>
         /// <param name="apr">The APR value.</param>
         /// <returns>The APY value.</returns>
-        private decimal CalculateApy(double apr)
+        private decimal CalculateApy(decimal apr)
         {
-            return (decimal)Math.Pow(1d + (apr / Constants.SlotsPerYear), Constants.SlotsPerYear) - 1m;
+            return (decimal)Math.Pow((double) (1m + (apr / Constants.SlotsPerYear)), Constants.SlotsPerYear) - 1m;
         }
 
         /// <summary>
@@ -230,11 +251,11 @@ namespace Solnet.Solend.Models
         /// <returns>The utilization ratio.</returns>
         public decimal CalculateUtilizationRatio()
         {
-            BigInteger totalBorrowsWads = Liquidity.BorrowedAmountWads / Constants.Wad;
+            BigInteger totalBorrows = Liquidity.BorrowedAmountWads / Constants.Wad;
 
-            decimal totalBorrowsWadsAsDecimal = (decimal)totalBorrowsWads;
+            decimal totalBorrowsAsDecimal = (decimal)totalBorrows;
 
-            return totalBorrowsWadsAsDecimal / (Liquidity.AvailableAmount + totalBorrowsWadsAsDecimal);
+            return totalBorrowsAsDecimal / (Liquidity.AvailableAmount + totalBorrowsAsDecimal);
         }
     }
 }

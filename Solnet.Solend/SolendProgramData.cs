@@ -19,45 +19,6 @@ namespace Solnet.Solend
         internal const int MethodOffset = 0;
 
         /// <summary>
-        /// Decodes the instruction instruction data  for the <see cref="SolendProgramInstructions.Values.InitializeLendingMarket"/> method.
-        /// </summary>
-        /// <param name="decodedInstruction">The decoded instruction to add data to.</param>
-        /// <param name="data">The instruction data to decode.</param>
-        /// <param name="keys">The account keys present in the transaction.</param>
-        /// <param name="keyIndices">The indices of the account keys for the instruction as they appear in the transaction.</param>
-        internal static void DecodeInitializeLendingMarketData(DecodedInstruction decodedInstruction, ReadOnlySpan<byte> data,
-            IList<PublicKey> keys, byte[] keyIndices)
-        {
-
-        }
-
-        /// <summary>
-        /// Decodes the instruction instruction data  for the <see cref="SolendProgramInstructions.Values.SetLendingMarketOwner"/> method.
-        /// </summary>
-        /// <param name="decodedInstruction">The decoded instruction to add data to.</param>
-        /// <param name="data">The instruction data to decode.</param>
-        /// <param name="keys">The account keys present in the transaction.</param>
-        /// <param name="keyIndices">The indices of the account keys for the instruction as they appear in the transaction.</param>
-        internal static void DecodeSetLendingMarketOwnerData(DecodedInstruction decodedInstruction, ReadOnlySpan<byte> data,
-            IList<PublicKey> keys, byte[] keyIndices)
-        {
-
-        }
-
-        /// <summary>
-        /// Decodes the instruction instruction data  for the <see cref="SolendProgramInstructions.Values.InitializeReserve"/> method.
-        /// </summary>
-        /// <param name="decodedInstruction">The decoded instruction to add data to.</param>
-        /// <param name="data">The instruction data to decode.</param>
-        /// <param name="keys">The account keys present in the transaction.</param>
-        /// <param name="keyIndices">The indices of the account keys for the instruction as they appear in the transaction.</param>
-        internal static void DecodeInitializeReserveData(DecodedInstruction decodedInstruction, ReadOnlySpan<byte> data,
-            IList<PublicKey> keys, byte[] keyIndices)
-        {
-
-        }
-
-        /// <summary>
         /// Encode the transaction instruction data for the <see cref="SolendProgramInstructions.Values.RefreshReserve"/> method.
         /// </summary>
         /// <returns>The byte array with the encoded data.</returns>
@@ -78,9 +39,9 @@ namespace Solnet.Solend
             byte[] keyIndices)
         {
             decodedInstruction.Values.Add("Reserve", keys[keyIndices[0]]);
-            decodedInstruction.Values.Add("Reserve Liquidity Oracle", keys[keyIndices[1]]);
-            decodedInstruction.Values.Add("Sysvar Clock", keys[keyIndices[1]]);
-
+            decodedInstruction.Values.Add("Reserve Liquidity Pyth Oracle", keys[keyIndices[1]]);
+            decodedInstruction.Values.Add("Reserve Liquidity Switchboard Oracle", keys[keyIndices[2]]);
+            decodedInstruction.Values.Add("Sysvar Clock", keys[keyIndices[3]]);
         }
 
         /// <summary>
@@ -106,7 +67,17 @@ namespace Solnet.Solend
         internal static void DecodeDepositReserveLiquidityData(DecodedInstruction decodedInstruction, ReadOnlySpan<byte> data,
             IList<PublicKey> keys, byte[] keyIndices)
         {
-
+            decodedInstruction.Values.Add("Source Liquidity", keys[keyIndices[0]]);
+            decodedInstruction.Values.Add("Destination Collateral", keys[keyIndices[1]]);
+            decodedInstruction.Values.Add("Reserve", keys[keyIndices[2]]);
+            decodedInstruction.Values.Add("Reserve Liquidity Supply", keys[keyIndices[3]]);
+            decodedInstruction.Values.Add("Reserve Collateral Mint", keys[keyIndices[4]]);
+            decodedInstruction.Values.Add("Lending Market", keys[keyIndices[5]]);
+            decodedInstruction.Values.Add("Lending Market Authority", keys[keyIndices[6]]);
+            decodedInstruction.Values.Add("User Transfer Authority", keys[keyIndices[7]]);
+            decodedInstruction.Values.Add("Sysvar Clock", keys[keyIndices[8]]);
+            decodedInstruction.Values.Add("Token Program", keys[keyIndices[9]]);
+            decodedInstruction.Values.Add("Liquidity Amount", data.GetU64(1));
         }
 
         /// <summary>
@@ -132,7 +103,17 @@ namespace Solnet.Solend
         internal static void DecodeRedeemReserveCollateralData(DecodedInstruction decodedInstruction, ReadOnlySpan<byte> data,
             IList<PublicKey> keys, byte[] keyIndices)
         {
-
+            decodedInstruction.Values.Add("Source Collateral", keys[keyIndices[0]]);
+            decodedInstruction.Values.Add("Destination Liquidity", keys[keyIndices[1]]);
+            decodedInstruction.Values.Add("Reserve", keys[keyIndices[2]]);
+            decodedInstruction.Values.Add("Reserve Collateral Mint", keys[keyIndices[3]]);
+            decodedInstruction.Values.Add("Reserve Liquidity Supply", keys[keyIndices[4]]);
+            decodedInstruction.Values.Add("Lending Market", keys[keyIndices[5]]);
+            decodedInstruction.Values.Add("Lending Market Authority", keys[keyIndices[6]]);
+            decodedInstruction.Values.Add("User Transfer Authority", keys[keyIndices[7]]);
+            decodedInstruction.Values.Add("Sysvar Clock", keys[keyIndices[8]]);
+            decodedInstruction.Values.Add("Token Program", keys[keyIndices[9]]);
+            decodedInstruction.Values.Add("Liquidity Amount", data.GetU64(1));
         }
 
         /// <summary>
@@ -183,7 +164,12 @@ namespace Solnet.Solend
         internal static void DecodeRefreshObligationData(DecodedInstruction decodedInstruction, IList<PublicKey> keys,
             byte[] keyIndices)
         {
-
+            decodedInstruction.Values.Add("Obligation", keys[keyIndices[0]]);
+            decodedInstruction.Values.Add("Sysvar Clock", keys[keyIndices[1]]);
+            for(int i = 2; i < keyIndices.Length; i++)
+            {
+                decodedInstruction.Values.Add($"Reserve {i-1}", keys[keyIndices[i]]);
+            }
         }
 
         /// <summary>
@@ -209,7 +195,16 @@ namespace Solnet.Solend
         internal static void DecodeDepositObligationCollateralData(DecodedInstruction decodedInstruction, ReadOnlySpan<byte> data,
             IList<PublicKey> keys, byte[] keyIndices)
         {
-
+            decodedInstruction.Values.Add("Source Collateral", keys[keyIndices[0]]);
+            decodedInstruction.Values.Add("Destination Collateral", keys[keyIndices[1]]);
+            decodedInstruction.Values.Add("Deposit Reserve", keys[keyIndices[2]]);
+            decodedInstruction.Values.Add("Obligation", keys[keyIndices[3]]);
+            decodedInstruction.Values.Add("Lending Market", keys[keyIndices[4]]);
+            decodedInstruction.Values.Add("Obligation Owner", keys[keyIndices[5]]);
+            decodedInstruction.Values.Add("User Transfer Authority", keys[keyIndices[6]]);
+            decodedInstruction.Values.Add("Sysvar Clock", keys[keyIndices[7]]);
+            decodedInstruction.Values.Add("Token Program", keys[keyIndices[8]]);
+            decodedInstruction.Values.Add("Collateral Amount", data.GetU64(1));
         }
 
         /// <summary>
@@ -235,7 +230,16 @@ namespace Solnet.Solend
         internal static void DecodeWithdrawObligationCollateralData(DecodedInstruction decodedInstruction, ReadOnlySpan<byte> data,
             IList<PublicKey> keys, byte[] keyIndices)
         {
-
+            decodedInstruction.Values.Add("Source Collateral", keys[keyIndices[0]]);
+            decodedInstruction.Values.Add("Destination Collateral", keys[keyIndices[1]]);
+            decodedInstruction.Values.Add("Withdraw Reserve", keys[keyIndices[2]]);
+            decodedInstruction.Values.Add("Obligation", keys[keyIndices[3]]);
+            decodedInstruction.Values.Add("Lending Market", keys[keyIndices[4]]);
+            decodedInstruction.Values.Add("Lending Market Authority", keys[keyIndices[5]]);
+            decodedInstruction.Values.Add("Obligation Owner", keys[keyIndices[6]]);
+            decodedInstruction.Values.Add("Sysvar Clock", keys[keyIndices[7]]);
+            decodedInstruction.Values.Add("Token Program", keys[keyIndices[8]]);
+            decodedInstruction.Values.Add("Collateral Amount", data.GetU64(1));
         }
 
         /// <summary>
@@ -243,7 +247,7 @@ namespace Solnet.Solend
         /// </summary>
         /// <param name="liquidityAmount">The amount of liquidity.</param>
         /// <returns>The byte array with the encoded data.</returns>
-        internal static byte[] EncodeBorrowObligationLiduidityData(ulong liquidityAmount)
+        internal static byte[] EncodeBorrowObligationLiquidityData(ulong liquidityAmount)
         {
             byte[] buffer = new byte[9];
             buffer.WriteU8((byte)SolendProgramInstructions.Values.BorrowObligationLiquidity, MethodOffset);
@@ -258,10 +262,20 @@ namespace Solnet.Solend
         /// <param name="data">The instruction data to decode.</param>
         /// <param name="keys">The account keys present in the transaction.</param>
         /// <param name="keyIndices">The indices of the account keys for the instruction as they appear in the transaction.</param>
-        internal static void DecodeBorrowObligationLiduidityData(DecodedInstruction decodedInstruction, ReadOnlySpan<byte> data,
+        internal static void DecodeBorrowObligationLiquidityData(DecodedInstruction decodedInstruction, ReadOnlySpan<byte> data,
             IList<PublicKey> keys, byte[] keyIndices)
         {
-
+            decodedInstruction.Values.Add("Source Liquidity", keys[keyIndices[0]]);
+            decodedInstruction.Values.Add("Destination Liquidity", keys[keyIndices[1]]);
+            decodedInstruction.Values.Add("Borrow Reserve", keys[keyIndices[2]]);
+            decodedInstruction.Values.Add("Borrow Reserve Liquidity Fee Receiver", keys[keyIndices[3]]);
+            decodedInstruction.Values.Add("Obligation", keys[keyIndices[4]]);
+            decodedInstruction.Values.Add("Lending Market", keys[keyIndices[5]]);
+            decodedInstruction.Values.Add("Lending Market Authority", keys[keyIndices[6]]);
+            decodedInstruction.Values.Add("Obligation Owner", keys[keyIndices[7]]);
+            decodedInstruction.Values.Add("Sysvar Clock", keys[keyIndices[8]]);
+            decodedInstruction.Values.Add("Token Program", keys[keyIndices[9]]);
+            decodedInstruction.Values.Add("Liquidity Amount", data.GetU64(1));
         }
 
         /// <summary>
@@ -287,59 +301,15 @@ namespace Solnet.Solend
         internal static void DecodeRepayObligationLiduidityData(DecodedInstruction decodedInstruction, ReadOnlySpan<byte> data,
             IList<PublicKey> keys, byte[] keyIndices)
         {
-
-        }
-
-        /// <summary>
-        /// Encode the transaction instruction data for the <see cref="SolendProgramInstructions.Values.LiquidateObligation"/> method.
-        /// </summary>
-        /// <param name="liquidityAmount">The amount of liquidity.</param>
-        /// <returns>The byte array with the encoded data.</returns>
-        internal static byte[] EncodeLiquidateObligationData(ulong liquidityAmount)
-        {
-            byte[] buffer = new byte[9];
-            buffer.WriteU8((byte)SolendProgramInstructions.Values.LiquidateObligation, MethodOffset);
-            buffer.WriteU64(liquidityAmount, 1);
-            return buffer;
-        }
-
-        /// <summary>
-        /// Decodes the instruction instruction data  for the <see cref="SolendProgramInstructions.Values.LiquidateObligation"/> method.
-        /// </summary>
-        /// <param name="decodedInstruction">The decoded instruction to add data to.</param>
-        /// <param name="data">The instruction data to decode.</param>
-        /// <param name="keys">The account keys present in the transaction.</param>
-        /// <param name="keyIndices">The indices of the account keys for the instruction as they appear in the transaction.</param>
-        internal static void DecodeLiquidateObligationData(DecodedInstruction decodedInstruction, ReadOnlySpan<byte> data,
-            IList<PublicKey> keys, byte[] keyIndices)
-        {
-
-        }
-
-        /// <summary>
-        /// Encode the transaction instruction data for the <see cref="SolendProgramInstructions.Values.FlashLoan"/> method.
-        /// </summary>
-        /// <param name="liquidityAmount">The amount of liquidity.</param>
-        /// <returns>The byte array with the encoded data.</returns>
-        internal static byte[] EncodeFlashLoanData(ulong liquidityAmount)
-        {
-            byte[] buffer = new byte[9];
-            buffer.WriteU8((byte)SolendProgramInstructions.Values.FlashLoan, MethodOffset);
-            buffer.WriteU64(liquidityAmount, 1);
-            return buffer;
-        }
-
-        /// <summary>
-        /// Decodes the instruction instruction data  for the <see cref="SolendProgramInstructions.Values.FlashLoan"/> method.
-        /// </summary>
-        /// <param name="decodedInstruction">The decoded instruction to add data to.</param>
-        /// <param name="data">The instruction data to decode.</param>
-        /// <param name="keys">The account keys present in the transaction.</param>
-        /// <param name="keyIndices">The indices of the account keys for the instruction as they appear in the transaction.</param>
-        internal static void DecodeFlashLoanData(DecodedInstruction decodedInstruction, ReadOnlySpan<byte> data,
-            IList<PublicKey> keys, byte[] keyIndices)
-        {
-
+            decodedInstruction.Values.Add("Source Liquidity", keys[keyIndices[0]]);
+            decodedInstruction.Values.Add("Destination Liquidity", keys[keyIndices[1]]);
+            decodedInstruction.Values.Add("Repay Reserve", keys[keyIndices[2]]);
+            decodedInstruction.Values.Add("Obligation", keys[keyIndices[3]]);
+            decodedInstruction.Values.Add("Lending Market", keys[keyIndices[4]]);
+            decodedInstruction.Values.Add("User Transfer Authority", keys[keyIndices[5]]);
+            decodedInstruction.Values.Add("Sysvar Clock", keys[keyIndices[6]]);
+            decodedInstruction.Values.Add("Token Program", keys[keyIndices[7]]);
+            decodedInstruction.Values.Add("Liquidity Amount", data.GetU64(1));
         }
 
         /// <summary>
@@ -375,8 +345,8 @@ namespace Solnet.Solend
             decodedInstruction.Values.Add("Destination Deposit Collateral", keys[keyIndices[7]]);
             decodedInstruction.Values.Add("Obligation", keys[keyIndices[8]]);
             decodedInstruction.Values.Add("Obligation Owner", keys[keyIndices[9]]);
-            decodedInstruction.Values.Add("Reserve Liquidity Pyth", keys[keyIndices[10]]);
-            decodedInstruction.Values.Add("Reserve Liquidity Switchboard", keys[keyIndices[11]]);
+            decodedInstruction.Values.Add("Reserve Liquidity Pyth Oracle", keys[keyIndices[10]]);
+            decodedInstruction.Values.Add("Reserve Liquidity Switchboard Oracle", keys[keyIndices[11]]);
             decodedInstruction.Values.Add("User Transfer Authority", keys[keyIndices[12]]);
             decodedInstruction.Values.Add("Sysvar Clock", keys[keyIndices[13]]);
             decodedInstruction.Values.Add("Token Program", keys[keyIndices[14]]);
@@ -433,10 +403,10 @@ namespace Solnet.Solend
         {
             List<byte[]> seeds = new() { lendingMarket.KeyBytes };
 
-            bool success = AddressExtensions.TryFindProgramAddress(seeds, programId.KeyBytes,
-                out byte[] lendingMarketAuthority, out _);
+            bool success = PublicKey.TryFindProgramAddress(seeds, programId,
+                out PublicKey lendingMarketAuthority, out _);
 
-            return !success ? null : new(lendingMarketAuthority);
+            return lendingMarketAuthority;
         }
     }
 }

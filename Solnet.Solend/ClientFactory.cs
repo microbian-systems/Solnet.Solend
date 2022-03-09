@@ -15,13 +15,13 @@ namespace Solnet.Solend
         /// </summary>
         /// <param name="logger">The logger.</param>
         /// <param name="rpcClient">The RPC Client instance.</param>
-        /// <param name="programId"
+        /// <param name="programId">The program id.</param>
         /// <returns>The <see cref="SolendClient"/>.</returns>
         public static ISolendClient GetClient(IRpcClient rpcClient = null, PublicKey programId = null,
             ILogger logger = null)
         {
 #if DEBUG
-            //logger ??= GetDebugLogger();
+            logger ??= GetDebugLogger();
 #endif
             return new SolendClient(logger, rpcClient, programId);
         }

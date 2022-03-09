@@ -60,9 +60,9 @@ namespace Solnet.Solend.Models
             public const int BorrowedAmountOffset = 137;
 
             /// <summary>
-            /// The offset at which the cumulative borrow amount value begins.
+            /// The offset at which the cumulative borrow rate value begins.
             /// </summary>
-            public const int CumulativeBorrowAmountOffset = 153;
+            public const int CumulativeBorrowRateOffset = 153;
 
             /// <summary>
             /// The offset at which the market price value begins.
@@ -108,7 +108,7 @@ namespace Solnet.Solend.Models
         /// <summary>
         /// Reserve liquidity cumulative borrow rate
         /// </summary>
-        public BigInteger CumulativeBorrowAmountWads;
+        public BigInteger CumulativeBorrowRateWads;
 
         /// <summary>
         /// Reserve liquidity market price in quote currency
@@ -131,7 +131,7 @@ namespace Solnet.Solend.Models
             SwitchboardOracle = data.GetPubKey(Layout.SwitchboardOracleOffset);
             AvailableAmount = data.GetU64(Layout.AvailableAmountOffset);
             BorrowedAmountWads = data.GetBigInt(Layout.BorrowedAmountOffset, 16, true);
-            CumulativeBorrowAmountWads = data.GetBigInt(Layout.CumulativeBorrowAmountOffset, 16, true);
+            CumulativeBorrowRateWads = data.GetBigInt(Layout.CumulativeBorrowRateOffset, 16, true);
             MarketPrice = data.GetBigInt(Layout.MarketPriceOffset, 16, true);
         }
 

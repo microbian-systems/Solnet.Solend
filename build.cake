@@ -4,7 +4,7 @@
 
 var testProjectsRelativePaths = new string[]
 {
-    "./Solnet.Template.Test/Solnet.Template.Test.csproj",
+    "./Solnet.Solend.Test/Solnet.Solend.Test.csproj",
 };
 
 var target = Argument("target", "Pack");
@@ -32,7 +32,6 @@ Task("Restore")
     });
 
 Task("Build")
-    .IsDependentOn("Clean")
     .IsDependentOn("Restore")
     .Does(() => {
         DotNetCoreBuild(solutionFolder, new DotNetCoreBuildSettings
@@ -100,11 +99,9 @@ Task("Pack")
             NoBuild = true,
             NoRestore = true,
             IncludeSymbols = true,
-            OutputDirectory = packagesDir,
+            OutputDirectory = packagesDir
         };
-
-
-        GetFiles("./src/*/*.csproj")
+        GetFiles("./*/*.csproj")
             .ToList()
             .ForEach(f => DotNetCorePack(f.FullPath, settings));
     });

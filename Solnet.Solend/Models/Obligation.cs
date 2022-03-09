@@ -1,7 +1,9 @@
-﻿using Solnet.Programs.Utilities;
+﻿using Solnet.Programs.Models;
+using Solnet.Programs.Utilities;
 using Solnet.Wallet;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace Solnet.Solend.Models
@@ -126,6 +128,99 @@ namespace Solnet.Solend.Models
         /// The dangerous borrow value at the weighted average liquidation threshold
         /// </summary>
         public BigInteger UnhealthyBorrowValue;
+
+        /// <summary>
+        /// Calculates the positions for this obligation.
+        /// </summary>
+        /// <param name="reserves">The corresponding reserves.</param>
+        /// <returns>The position stats.</returns>
+        public PositionStats CalculatePosition(ProgramAccountsResultWrapper<List<Reserve>> reserves)
+        {
+            decimal userTotalDeposit = 0m;
+            decimal userTotalBorrow = 0m;
+            decimal borrowLimit = 0m;
+            decimal liquidationThreshold = 0m;
+            int positions = 0;
+            List<Position> deposits = new();
+            List<Position> borrows = new();
+
+            foreach(var deposit in Deposits)
+            {
+                var reserveAccountKeypair = reserves.OriginalRequest.Result
+                    .FirstOrDefault(x => x.PublicKey.Equals(deposit.DepositReserve));
+                if (reserveAccountKeypair == null) continue;
+                var reserveIndex = reserves.OriginalRequest.Result
+                    .IndexOf(reserveAccountKeypair);
+                if (reserveIndex == -1) continue;
+
+                var reserve = reserves.ParsedResult[reserveIndex];
+
+                var ltv =  reserve.Config.LoanToValueRatio / 100m;
+                var liqThreshold = reserve.Config.LiquidationThreshold / 100m;
+
+                var supplyAmount = deposit.DepositedAmount * reserve.GetCTokenExchangeRate();
+                var supplyAmountUsd = supplyAmount * reserve.GetMarketPrice()
+                    / (decimal) Math.Pow(10, reserve.Liquidity.Decimals);
+
+                userTotalDeposit += supplyAmountUsd;
+                borrowLimit += supplyAmountUsd * ltv;
+                liquidationThreshold += supplyAmountUsd * liqThreshold;
+
+                if (supplyAmount != 0) positions++;
+
+                deposits.Add(new Position {
+                    MintAddress = reserve.Liquidity.Mint,
+                    NativeAmount = supplyAmount,
+                    NativeAmountUi = supplyAmount / (decimal) Math.Pow(10, reserve.Liquidity.Decimals),
+                    AmountUsd = supplyAmountUsd,
+                    });
+            }
+
+            foreach(var borrow in Borrows)
+            {
+                var reserveAccountKeypair = reserves.OriginalRequest.Result
+                    .FirstOrDefault(x => x.PublicKey.Equals(borrow.BorrowReserve));
+                if (reserveAccountKeypair == null) continue;
+                var reserveIndex = reserves.OriginalRequest.Result
+                    .IndexOf(reserveAccountKeypair);
+                if (reserveIndex == -1) continue;
+
+                var reserve = reserves.ParsedResult[reserveIndex];
+
+                var borrowAmount = (decimal) (borrow.BorrowedAmountWads * reserve.Liquidity.CumulativeBorrowRateWads
+                    / borrow.CumulativeBorrowRateWads / Constants.Wad);
+                var borrowAmountUsd = borrowAmount * reserve.GetMarketPrice()
+                    / (decimal) Math.Pow(10, reserve.Liquidity.Decimals);
+
+                userTotalBorrow += borrowAmountUsd;
+
+                if (borrowAmount != 0) positions++;
+
+                borrows.Add(new Position {
+                    MintAddress = reserve.Liquidity.Mint,
+                    NativeAmount = borrowAmount,
+                    NativeAmountUi = borrowAmount / (decimal)Math.Pow(10, reserve.Liquidity.Decimals),
+                    AmountUsd = borrowAmountUsd,
+                    });
+            }
+
+            return new PositionStats 
+            { 
+                Deposits = deposits,
+                Borrows = borrows,
+                ObligationStats = new ObligationStats
+                { 
+                    BorrowLimit = borrowLimit,
+                    LiquidationThreshold = liquidationThreshold,
+                    Positions = positions,
+                    UserTotalDeposit = userTotalDeposit,
+                    UserTotalBorrow = userTotalBorrow,
+                    BorrowUtilization = userTotalBorrow / userTotalDeposit,
+                    NetAccountValue = userTotalDeposit - userTotalBorrow
+                }
+            };
+        }
+
 
         /// <summary>
         /// Initialize the <see cref="Obligation"/> with the given data.

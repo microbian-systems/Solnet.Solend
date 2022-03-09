@@ -18,20 +18,14 @@ namespace Solnet.Solend
     public class SolendClient : BaseClient, ISolendClient
     {
         /// <summary>
-        /// The program id.
-        /// </summary>
-        private readonly PublicKey _programId;
-
-        /// <summary>
         /// Initialize the Solend client with the given RPC client instance and logger.
         /// </summary>
         /// <param name="rpcClient">The RPC client instance.</param>
         /// <param name="logger">The logger instance.</param>
         /// <param name="programId">The program id.</param>
         internal SolendClient(ILogger logger = null, IRpcClient rpcClient = default,
-            PublicKey programId = null) : base(rpcClient, null)
+            PublicKey programId = null) : base(rpcClient, null, programId ?? SolendProgram.MainNetProgramIdKey)
         {
-            _programId = programId != null ? programId : SolendProgram.MainNetProgramIdKey;
         }
 
         /// <inheritdoc cref="ISolendClient.GetLendingMarkets(Commitment)"/>
@@ -41,7 +35,7 @@ namespace Solnet.Solend
         /// <inheritdoc cref="ISolendClient.GetLendingMarketsAsync(Commitment)"/>
         public async Task<ProgramAccountsResultWrapper<List<LendingMarket>>> GetLendingMarketsAsync(Commitment commitment = Commitment.Confirmed)
         {
-            return await GetProgramAccounts<LendingMarket>(_programId, null,
+            return await GetProgramAccounts<LendingMarket>(ProgramIdKey, null,
                 LendingMarket.Layout.Length, commitment);
         }
 
@@ -80,7 +74,7 @@ namespace Solnet.Solend
                         Offset = Obligation.Layout.LendingMarketOffset,
                         Bytes = lendingMarket
                     });
-            return await GetProgramAccounts<Obligation>(_programId, filters,
+            return await GetProgramAccounts<Obligation>(ProgramIdKey, filters,
                 Obligation.Layout.Length, commitment);
         }
 
@@ -91,6 +85,14 @@ namespace Solnet.Solend
         /// <inheritdoc cref="ISolendClient.GetReserveAsync(PublicKey, Commitment)"/>
         public Task<AccountResultWrapper<Reserve>> GetReserveAsync(PublicKey reserve, Commitment commitment = Commitment.Confirmed)
             => GetAccount<Reserve>(reserve, commitment);
+
+        /// <inheritdoc cref="ISolendClient.GetLendingMarket(PublicKey, Commitment)"/>
+        public AccountResultWrapper<LendingMarket> GetLendingMarket(PublicKey lendingMarket, Commitment commitment = Commitment.Confirmed)
+            => GetLendingMarketAsync(lendingMarket, commitment).Result;
+
+        /// <inheritdoc cref="ISolendClient.GetLendingMarketAsync(PublicKey, Commitment)"/>
+        public Task<AccountResultWrapper<LendingMarket>> GetLendingMarketAsync(PublicKey lendingMarket, Commitment commitment = Commitment.Confirmed)
+            => GetAccount<LendingMarket>(lendingMarket, commitment);
 
         /// <inheritdoc cref="ISolendClient.GetReserves(PublicKey, Commitment)"/>
         public ProgramAccountsResultWrapper<List<Reserve>> GetReserves(PublicKey lendingMarket, Commitment commitment = Commitment.Confirmed)
@@ -107,7 +109,7 @@ namespace Solnet.Solend
                     Bytes = lendingMarket.Key
                 }
             };
-            return await GetProgramAccounts<Reserve>(_programId, filters,
+            return await GetProgramAccounts<Reserve>(ProgramIdKey, filters,
                 Reserve.Layout.Length, commitment);
         }
     }

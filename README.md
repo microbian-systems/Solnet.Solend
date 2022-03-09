@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="/assets/icon.png" margin="auto" height="175"/>
+    <img src="assets/icon.png" margin="auto" height="175"/>
 </p>
 <p align="center">
     <a href="https://github.com/bmresearch/Solnet.Solend/actions/workflows/dotnet.yml">
@@ -20,17 +20,57 @@ separate repository so it is contained, as the goal for [Solnet](https://github.
 
 ## Features
 
-- TO DO
+- Decoding of Solend data structures
+  - `LendingMarket`
+  - `Obligation` including `ObligationCollateral` and `ObligationLiquidity`
+  - `Reserve` including `ReserveCollateral` and `ReserveLiquidity`
+- Calculation of APR, APYs, total supplied/borrowed value, account positions, etc
+- `SolendProgram` instructions implemented
+  - `InitializeObligation`
+  - `RefreshReserve`
+  - `RefreshObligation`
+  - `DepositReserveLiquidity`
+  - `RedeemReserveCollateral`
+  - `BorrowObligationLiquidity`
+  - `RepayObligationLiquidity`
+  - `DepositObligationCollateral`
+  - `WithdrawObligationCollateral`
+  - `DepositReserveLiquidityAndObligationCollateral`
+  - `WithdrawObligationCollateralAndRedeemReserveCollateral`
 
 ## Requirements
-- net 5.0
+- net 6.0
 
 ## Dependencies
-- Solnet.Programs v0.4.14
-- Solnet.Wallet v0.4.14
-- Solnet.Rpc v0.4.14
+- Solnet.Programs v6.0.3
+- Solnet.Wallet v6.0.3
+- Solnet.Rpc v6.0.3
 
 ## Examples
 
-- TO DO
+The [Solnet.Solend.Examples](https://github.com/bmresearch/Solnet.Solend/tree/master/Solnet.Solend.Examples) project features some examples on how to use the [OSolendClient](https://github.com/bmresearch/Solnet.Solend/tree/master/Solnet.Solend/ISolendClient.cs), these examples include:
+- Getting all lending markets
+- Getting all reserves
+- Getting all obligations for a given user and lending market
+- Calculating Solend's TVL
+
+As well as examples on how to use the `SolendProgram`
+- Minting cTokens
+- Redeeming cTokens
+- Depositing and withdrawing liquidity
+- Borrowing liquidity and repaying the borrowed liquidity
+
+## Contribution
+
+We encourage everyone to contribute, submit issues, PRs, discuss. Every kind of help is welcome.
+
+## Contributors
+
+* **Hugo** - *Maintainer* - [murlokito](https://github.com/murlokito)
+
+See also the list of [contributors](https://github.com/bmresearch/Solnet.Solend/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/bmresearch/Solnet.Solend/blob/master/LICENSE) file for details
 

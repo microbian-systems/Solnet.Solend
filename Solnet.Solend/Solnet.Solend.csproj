@@ -1,30 +1,27 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <Description>
-            Solnet.Solend implements functionality to integrate Solend Protocol project into .Net applications.
-        </Description>
-        <TargetFramework>net5.0</TargetFramework>
+	<PropertyGroup>
+		<Description>
+			Solnet.Solend implements functionality to integrate Solend Protocol project into .Net applications.
+		</Description>
+		<TargetFramework>net6.0</TargetFramework>
+		<RootNamespace>Solnet.Solend</RootNamespace>
+	</PropertyGroup>
 
-        <IsPackable>false</IsPackable>
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Solnet.Solend.Test</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
 
-        <RootNamespace>Solnet.Solend</RootNamespace>
-    </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+		<PackageReference Include="Solnet.Programs" Version="6.0.3" />
+		<PackageReference Include="Solnet.Rpc" Version="6.0.3" />
+		<PackageReference Include="Solnet.Wallet" Version="6.0.3" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-            <_Parameter1>Solnet.Solend.Test</_Parameter1>
-        </AssemblyAttribute>
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0.0" />
-        <PackageReference Include="Solnet.Programs" Version="0.6.0" />
-        <PackageReference Include="Solnet.Rpc" Version="0.6.0" />
-        <PackageReference Include="Solnet.Wallet" Version="0.6.0" />
-    </ItemGroup>
-
-    <Import Project="..\SharedBuildProperties.props" />
+	<Import Project="..\SharedBuildProperties.props" />
 </Project>

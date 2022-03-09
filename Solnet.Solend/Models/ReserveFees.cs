@@ -81,17 +81,5 @@ namespace Solnet.Solend.Models
         /// <returns>The <see cref="ReserveFees"/> instance.</returns>
         public static ReserveFees Deserialize(byte[] data)
             => new(data.AsSpan());
-
-        /// <summary>
-        /// Serializes the <see cref="ReserveFees"/> object to the given buffer at the desired offset.
-        /// </summary>
-        /// <param name="buffer">The buffer to serialize into.</param>
-        /// <param name="offset">The offset at which to begin serialization.</param>
-        public void Serialize(byte[] buffer, int offset = 0)
-        {
-            buffer.WriteU64(BorrowFeeWad, offset + Layout.BorrowFeeWadOffset);
-            buffer.WriteU64(FlashLoanFeeWad, offset + Layout.FlashLoanFeeWadOffset);
-            buffer.WriteU8(HostFeePercentage, offset + Layout.HostFeePercentageOffset);
-        }
     }
 }
