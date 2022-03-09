@@ -8,6 +8,16 @@
     <a href="https://coveralls.io/github/bmresearch/Solnet.Solend?branch=master">
         <img src="https://coveralls.io/repos/github/bmresearch/Solnet.Solend/badge.svg?branch=master" 
             alt="Coverage Status" ></a>
+<br/>
+    <a href="">
+        <img src="https://img.shields.io/github/license/bmresearch/Solnet.Solend?style=flat-square"
+            alt="Code License"></a>
+    <a href="https://twitter.com/intent/follow?screen_name=blockmountainio">
+        <img src="https://img.shields.io/twitter/follow/blockmountainio?style=flat-square&logo=twitter"
+            alt="Follow on Twitter"></a>
+    <a href="https://discord.gg/YHMbpuS3Tx">
+       <img alt="Discord" src="https://img.shields.io/discord/849407317761064961?style=flat-square"
+            alt="Join the discussion!"></a>
 </p>
 
 # What is Solnet.Solend?
@@ -48,7 +58,7 @@ separate repository so it is contained, as the goal for [Solnet](https://github.
 
 ## Examples
 
-The [Solnet.Solend.Examples](https://github.com/bmresearch/Solnet.Solend/tree/master/Solnet.Solend.Examples) project features some examples on how to use the [OSolendClient](https://github.com/bmresearch/Solnet.Solend/tree/master/Solnet.Solend/ISolendClient.cs), these examples include:
+The [Solnet.Solend.Examples](https://github.com/bmresearch/Solnet.Solend/tree/master/Solnet.Solend.Examples) project features some examples on how to use the [ISolendClient](https://github.com/bmresearch/Solnet.Solend/tree/master/Solnet.Solend/ISolendClient.cs), these examples include:
 - Getting all lending markets
 - Getting all reserves
 - Getting all obligations for a given user and lending market
