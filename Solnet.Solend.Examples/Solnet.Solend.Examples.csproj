@@ -8,8 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Solnet.Extensions" Version="6.0.3" />
-      <PackageReference Include="Solnet.KeyStore" Version="6.0.3" />
+      <PackageReference Include="Solnet.Extensions" Version="6.0.7" />
+      <PackageReference Include="Solnet.KeyStore" Version="6.0.7" />
     </ItemGroup>
 
     <ItemGroup>
