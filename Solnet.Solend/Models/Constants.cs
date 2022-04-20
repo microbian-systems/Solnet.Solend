@@ -52,10 +52,14 @@ namespace Solnet.Solend.Models
         {
             { "Main Pool", new("4UpD2fh7xH3VP9QQaXtsS1YY3bxzWhtfpks7FatyKvdY") },
             { "TURBO SOL Pool", new("7RCz8wb6WXxUhAigok9ttgrVgDFFFbibcirECzWSBauM") },
-            { "Invictus Pool", new("5i8SzwX2LjpGUxLZRJ8EiYohpuKgW2FYDFhVjhGj66P1") },
-            { "Bonfida Pool", new("91taAt3bocVZwcChVgZTTaQYt2WpBVE3M9PkWekFQx4J") },
+            { "NFT Pool", new("29yTiqjGdoNiRLMVc7ZoqFpbW3gkmefwMG9SUiMMD4J9") },
+            { "Coin98 Pool", new("7tiNvRHSjYDfc6usrWnSNPyuN68xQfKs1ZG2oqtR5F46") },
+            { "Stable Pool", new("GktVYgkstojYd8nVXGXKJHi7SstvgZ6pkQqQhUPD7y7Q") },
+            { "Dog Pool", new("HASr6hiYVoRcVXk3GttC4PjBBPQ3sGYDzE7HSPJdcke6") },
             { "Step Pool", new("DxdnNmdWHcW6RGTYiD5ms5f7LNZBaA7Kd1nMfASnzwdY") },
             { "Star Atlas Pool", new("99S4iReDsyxKDViKdXQKWDcB6C3waDmfPWWyb5HAbcZF") },
+            { "Bonfida Pool", new("91taAt3bocVZwcChVgZTTaQYt2WpBVE3M9PkWekFQx4J") },
+            { "Invictus Pool", new("5i8SzwX2LjpGUxLZRJ8EiYohpuKgW2FYDFhVjhGj66P1") },
         }; 
 
         /// <summary>
