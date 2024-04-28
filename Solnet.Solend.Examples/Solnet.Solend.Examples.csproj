@@ -1,19 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-		<IsPackable>false</IsPackable>
-        <TargetFramework>net6.0</TargetFramework>
-        <RootNamespace>Solnet.Solend.Examples</RootNamespace>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Solnet.Extensions" Version="6.0.8" />
-      <PackageReference Include="Solnet.KeyStore" Version="6.0.8" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\Solnet.Solend\Solnet.Solend.csproj" />
-    </ItemGroup>
-
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Solnet.Solend.Examples</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Solnet.Extensions" Version="6.0.8" />
+    <PackageReference Include="Solnet.KeyStore" Version="6.0.8" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Solnet.Solend\Solnet.Solend.csproj" />
+  </ItemGroup>
 </Project>
