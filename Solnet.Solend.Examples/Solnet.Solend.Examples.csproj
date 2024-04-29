@@ -6,8 +6,8 @@
     <RootNamespace>Solnet.Solend.Examples</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Solnet.Extensions" Version="6.0.8" />
-    <PackageReference Include="Solnet.KeyStore" Version="6.0.8" />
+    <PackageReference Include="Solnet.Extensions" Version="6.1.0" />
+    <PackageReference Include="Solnet.KeyStore" Version="6.1.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Solnet.Solend\Solnet.Solend.csproj" />
