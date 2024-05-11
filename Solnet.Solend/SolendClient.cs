@@ -103,7 +103,7 @@ namespace Solnet.Solend
         {
             var filters = new List<MemCmp>()
             {
-                new MemCmp()
+                new()
                 {
                     Offset = Reserve.Layout.LendingMarketOffset,
                     Bytes = lendingMarket.Key

@@ -23,14 +23,12 @@ namespace Solnet.Solend
         /// <summary>
         /// Solend Program MainNet Program ID.
         /// </summary>
-        public static readonly PublicKey MainNetProgramIdKey =
-            new PublicKey("So1endDq2YkqhipRh3WViPa8hdiSpxWy6z3Z6tMCpAo");
+        public static readonly PublicKey MainNetProgramIdKey = new("So1endDq2YkqhipRh3WViPa8hdiSpxWy6z3Z6tMCpAo");
 
         /// <summary>
         /// Solend Program DevNet Program ID.
         /// </summary>
-        public static readonly PublicKey DevNetProgramIdKey =
-            new PublicKey("ALend7Ketfx5bxh6ghsCDXAoDrhvEmsXT3cynB6aPLgx");
+        public static readonly PublicKey DevNetProgramIdKey = new("ALend7Ketfx5bxh6ghsCDXAoDrhvEmsXT3cynB6aPLgx");
 
         /// <summary>
         /// Solend Program Name.
@@ -49,13 +47,13 @@ namespace Solnet.Solend
         /// Initialize the <see cref="SolendProgram"/> for <see cref="Cluster.DevNet"/>.
         /// </summary>
         /// <returns>The <see cref="SolendProgram"/> instance.</returns>
-        public static SolendProgram CreateDevNet() => new SolendProgram(DevNetProgramIdKey);
+        public static SolendProgram CreateDevNet() => new(DevNetProgramIdKey);
 
         /// <summary>
         /// Initialize the <see cref="SolendProgram"/> for <see cref="Cluster.MainNet"/>.
         /// </summary>
         /// <returns>The <see cref="SolendProgram"/> instance.</returns>
-        public static SolendProgram CreateMainNet() => new SolendProgram(MainNetProgramIdKey);
+        public static SolendProgram CreateMainNet() => new(MainNetProgramIdKey);
 
         /// <summary>
         /// Initialize a new <see cref="TransactionInstruction"/> for the <see cref="SolendProgramInstructions.Values.RefreshReserve"/> method.
