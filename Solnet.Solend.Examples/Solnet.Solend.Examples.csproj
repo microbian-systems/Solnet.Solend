@@ -8,6 +8,7 @@
   <ItemGroup>
     <PackageReference Include="Solnet.Extensions" Version="6.1.0" />
     <PackageReference Include="Solnet.KeyStore" Version="6.1.0" />
+    <PackageReference Include="ThrowGuard" Version="1.0.6" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Solnet.Solend\Solnet.Solend.csproj" />
